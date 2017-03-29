@@ -9,3 +9,4 @@ scalaVersion := "2.11.8"
 libraryDependencies += javaJdbc
 libraryDependencies += cache
 libraryDependencies += javaWs
+libraryDependencies += "org.postgresql" % "postgresql" % "9.4.1212"
