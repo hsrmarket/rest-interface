@@ -18,7 +18,7 @@ public class BookController extends Controller {
     }
 
     public Result getAll(){
-        db.getConnection();
+
 
         return null;
     }

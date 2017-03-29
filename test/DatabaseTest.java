@@ -19,7 +19,7 @@ public class DatabaseTest {
     @Before
     public void createDatabase() {
         database = Databases.createFrom(
-                "com.mysql.jdbc.Driver",
+                "org.postgresql.Driver",
                 "jdbc:postgresql://duernten.forrer.network/mock_data",
                 ImmutableMap.of(
                         "user", "postgress",
