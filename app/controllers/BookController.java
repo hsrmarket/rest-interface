@@ -1,7 +1,8 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import play.db.Database;
+
+import play.db.*;
 import play.libs.Json;
 import play.mvc.*;
 import views.html.*;
@@ -10,7 +11,6 @@ import model.*;
 import javax.inject.Inject;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 
 public class BookController extends Controller {
@@ -21,6 +21,7 @@ public class BookController extends Controller {
     public BookController(Database db) {
         this.db = db;
     }
+
 
     public Result getAll(){
 
@@ -48,7 +49,7 @@ public class BookController extends Controller {
             }else{
                 Connection connection = db.getConnection();
                 try {
-                    connection.prepareStatement("insert into MOCK_DATA (ID, IBAN, Author) values ("+id+","+iban+","+author+")").execute();
+                    connection.prepareStatement("insert into MOCK_DATA (ID, IBAN, Author) values ("+id+", '"+iban+"', '"+author+"')").execute();
                     DefaultSuccessMessage successMessage =  new DefaultSuccessMessage();
                     successMessage.setId(1);
                     successMessage.setMessage("Dataset successfully insert");
