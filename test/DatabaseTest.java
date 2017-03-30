@@ -9,9 +9,6 @@ import java.sql.Connection;
 
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by Elias on 29.03.17.
- */
 public class DatabaseTest {
 
     Database database;
