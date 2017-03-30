@@ -20,9 +20,9 @@ public class DatabaseTest {
     public void createDatabase() {
         database = Databases.createFrom(
                 "org.postgresql.Driver",
-                "jdbc:postgresql://duernten.forrer.network/mock_data",
+                "jdbc:postgresql://duernten.forrer.network/postgres",
                 ImmutableMap.of(
-                        "user", "postgress",
+                        "username", "postgres",
                         "password", "Pa$$w0rd"
                 )
         );
@@ -41,6 +41,9 @@ public class DatabaseTest {
         assertTrue(
                 connection.prepareStatement("select * from mock_data where id = 999").executeQuery().next()
         );
+
+        connection.prepareStatement("delete from mock_data where id = 999").execute();
+
     }
 
 }
