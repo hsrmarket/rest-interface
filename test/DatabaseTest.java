@@ -39,7 +39,7 @@ public class DatabaseTest {
                 connection.prepareStatement("select * from mock_data where id = 999").executeQuery().next()
         );
 
-        //connection.prepareStatement("delete from mock_data where id = 999").execute();
+        connection.prepareStatement("delete from mock_data where id = 999").execute();
 
     }
 
