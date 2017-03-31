@@ -10,7 +10,9 @@ import model.*;
 
 import javax.inject.Inject;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 public class BookController extends Controller {
@@ -25,8 +27,31 @@ public class BookController extends Controller {
 
     public Result getAll(){
 
+        Connection connection = db.getConnection();
+        try {
+            ResultSet resultSet = connection.prepareStatement("select id, iban, author from MOCK_DATA").executeQuery();
+            ArrayList<Book> list = new ArrayList<>();;
+            while(resultSet.next()){
+                Book book = new Book();
+                book.setId(resultSet.getInt("id"));
+                book.setIban(resultSet.getString("iban"));
+                book.setAuthor(resultSet.getString("author"));
 
-        return null;
+                list.add(book);
+            }
+
+            return ok(Json.toJson(list));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return badRequest(index.render("Something went wrong"));
     }
 
     public Result insert(){
@@ -56,9 +81,15 @@ public class BookController extends Controller {
                     return ok(Json.toJson(successMessage));
                 } catch (SQLException e) {
                     e.printStackTrace();
+                } finally {
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
-        return ok(index.render("Something went wrong"));
+        return badRequest(index.render("Something went wrong"));
     }
 }
