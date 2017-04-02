@@ -31,12 +31,12 @@ public class BookController extends Controller {
         try {
             ResultSet resultSet = connection.prepareStatement("select id, iban, author from MOCK_DATA").executeQuery();
             ArrayList<Book> list = new ArrayList<>();;
+
             while(resultSet.next()){
                 Book book = new Book();
                 book.setId(resultSet.getInt("id"));
                 book.setIban(resultSet.getString("iban"));
                 book.setAuthor(resultSet.getString("author"));
-
                 list.add(book);
             }
 
