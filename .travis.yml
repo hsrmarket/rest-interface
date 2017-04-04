@@ -16,6 +16,7 @@ before_cache:
 - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print0 | xargs -n10 -0 rm
 after_success:
 - cd ..
+- ls
 - tar -czf package.tgz rest-interface
 - export SSHPASS=$DEPLOY_PASS
 - sshpass -e scp -P 15003 -o stricthostkeychecking=no package.tgz $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
