@@ -15,21 +15,13 @@ before_cache:
 - rm -rf $HOME/.ivy2/cache/scala_*/sbt_*/com.typesafe.play/*
 - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print0 | xargs -n10 -0 rm
 after_success:
-- if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]];
-  then cd ..; fi
-- if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]];
-  then ls; fi
-- if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]];
-  then tar -czf package.tgz rest-interface; fi
-- if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]];
-  then export SSHPASS=$DEPLOY_PASS; fi
-- if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]];
-  then sshpass -e scp -P 15003 -o stricthostkeychecking=no package.tgz $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH;
-  fi
-- if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]];
-  then sshpass -e ssh -p 15002 $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/deploy.sh; fi
-- if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]];
-  then rm -rf package.tgz; fi
+- cd ..
+- ls
+- tar -czf package.tgz rest-interface
+- export SSHPASS=$DEPLOY_PASS
+- sshpass -e scp -P 15003 -o stricthostkeychecking=no package.tgz $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+- sshpass -e ssh -p 15002 $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/deploy.sh
+- rm -rf package.tgz
 env:
   global:
   - secure: dl0fY/o4QI7K2J3QtMDZ2nKoksWA5PdPajFQBziTbWZ4CEwTMUIu05F32qE0+AXYLwcapp4/ODgzfb3SEY0n9NGxXyNj54MsfFgWgWQsEJRoDU9yTWOScFpEQt43bD+8U8OozJV/ZAtiGMKB+fq03cXuwWIKPkhqOoCvRcnfaKyB+PPWMrUtQm0pkn8Mx51zmqAtML1HpnWUhGqjkQI/67QXq3/Vpcmpl0TYpvt071VV3PZCm2QXxOHOpE7vRP49U+/xd/JIpV1MEmC9rEvoPmTEVkRMe6vodTJi1nfPwkVcCnEy+OWhNrBWAPzfgXfXutVx+UkuleUKe85jGh8PcLcIJ6uc2SiHjrvMZCVZ9mdOB0DI9g0l0xKqOCH67f3P/GGf7Fmf5lRS5vj9FmX3FyMNT9E7EnDyImwbLxaZK2s6fh7b37thQQvZqRGsjx09qpMRZCdCF9DgaWc8dAclqFgwboooGaKjvGPkdgMTkv03PHpz4htF2jst9Su86GCkQoUOGSA/odSrxUIepkP59O41N2aGMfO5anicrKh+7/jp4NzliHYFCtSCiSBcSkYunkOiPE2/CbjLQ9CD66veXUTvgjf6SQFQvZsvWur6VQA84GTTqpLBYVKMKzDxF+R4/R4sdlN2HtzjG30X8g797+29wJsnM2AzeL2JbJPfUSU=
