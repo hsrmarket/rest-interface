@@ -20,7 +20,7 @@ after_success:
 - tar -czf package.tgz rest-interface
 - export SSHPASS=$DEPLOY_PASS
 - sshpass -e scp -P 15003 -o stricthostkeychecking=no package.tgz $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
-- sshpass -e ssh -p 15002 $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/deploy.sh
+- sshpass -e ssh -p 15003 $DEPLOY_USER@$DEPLOY_HOST $DEPLOY_PATH/deploy.sh
 - rm -rf package.tgz
 env:
   global:
