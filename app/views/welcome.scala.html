@@ -25,81 +25,64 @@
                 </p>
             </blockquote>
 
-            <h2>Why do you see this page?</h2>
+            <h2>BookController</h2>
+            <p>Here you can see the book controller. It's implemented in <code>app/controllers/BookController</code>. Be warned this is only pseudocode. It's more to see the return values/objects.</p>
+            <pre><code>public class BookController extends Controller {
 
-            <p>
-                The <code>conf/routes</code> file defines a route that tells Play to invoke the <code>HomeController.index</code> action
-                whenever a browser requests the <code>/</code> URI using the GET method:
-            </p>
+    private Database db;
 
-            <pre><code># Home page
-GET     /               controllers.HomeController.index</code></pre>
+    public Result getAll(){
+        if(error){
+            return badRequest(index.render("Something went wrong"));
+        }else{
+            return ok(Json.toJson(list));
+        }
 
+    }
 
-            <p>
-                Play has invoked the <code>controllers.HomeController.index</code> method:
-            </p>
-
-            <pre><code>public static Result index() {
-    return ok(index.render("Your new application is ready."));
+    public Result insert(){
+        if(error){
+            return badRequest(Json.toJson(errorMessage));
+        }else{
+            return ok(Json.toJson(successMessage));
+        }
+            return badRequest(index.render("Something went wrong"));
+    }
 }</code></pre>
 
-            <p>
-                An action method handles the incoming HTTP request, and returns the HTTP result to send back to the web client.
-                Here we send a <code>200 OK</code> response, using a template to fill its content.
-            </p>
 
-            <p>
-                The template is defined in the <code>app/views/index.scala.html</code> file and compiled as a standard Java class.
-            </p>
+            <h2>Models</h2>
+            <p>Here you can see the different models and there properties or methodes. They're defined in <code>app/model/</code></p>
+            <h3>Book</h3>
+            <pre><code>public class Book {
 
-            <pre><code>@@(message: String)
+    private Integer id;
+    private String iban;
+    private String author;
 
-  @@main("Welcome to Play") {
-
-  @@play20.welcome(message, style = "Java")
+    //Getters and Setters
 
 }</code></pre>
 
-            <p>
-                The first line of the template defines the function signature. Here it just takes a single <code>String</code> parameter.
-                Then this template calls another function defined in <code>app/views/main.scala.html</code> which displays the HTML layout, and another
-                function that displays this welcome message. You can freely add any HTML fragment mixed with Scala code in this file.
-            </p>
+            <h3>DefaultSuccessMessage</h3>
+            <pre><code>public class DefaultSuccessMessage {
 
-            <blockquote>
-                <p>
-                    <strong>Note</strong> that Scala is fully compatible with Java, so if you don’t know Scala don’t panic, a Scala statement is very similar to a Java one.
-                </p>
-            </blockquote>
+    private Integer id;
+    private String message;
 
-            <p>You can read more about <a href="https://www.playframework.com/documentation/@version/ScalaTemplates">Twirl</a>, the template language used by Play, and how Play handles <a href="https://www.playframework.com/documentation/@version/JavaActions">actions</a>.</p>
+    //Getters and Setters
 
-            <h2>Async Controller</h2>
+}</code></pre>
 
-            Now that you've seen how Play renders a page, take a look at <code>AsyncController.java</code>, which shows how to do asynchronous programming when handling a request.  The code is almost exactly the same as <code>HomeController.java</code>, but instead of returning <code>Result</code>, the action returns <code>CompletionStage&lt;Result&gt;</code> to Play.  When the execution completes, Play can use a thread to render the result without blocking the thread in the mean time.
+            <h3>DefaultErrorMessage</h3>
+            <pre><code>public class DefaultErrorMessage {
 
-            <p>
-                <a href="@routes.AsyncController.message">Click here for the AsyncController action!</a>
-            </p>
+    private Integer id;
+    private String message;
 
-            <p>
-                You can read more about <a href="https://www.playframework.com/documentation/@version/JavaAsync">asynchronous actions</a> in the documentation.
-            </p>
+    //Getters and Setters
 
-            <h2>Count Controller</h2>
-
-            <p>
-                Both the HomeController and AsyncController are very simple, and typically controllers present the results of the interaction of several services.  As an example, see the <code>CountController</code>, which shows how to inject a component into a controller and use the component when handling requests.  The count controller increments every time you click on it, so keep clicking to see the numbers go up.
-            </p>
-
-            <p>
-                <a href="@routes.CountController.count">Click here for the CountController action!</a>
-            </p>
-
-            <p>
-                You can read more about <a href="https://www.playframework.com/documentation/@version/JavaDependencyInjection">dependency injection</a> in the documentation.
-            </p>
+}</code></pre>
 
             <h2>Need more info on the console?</h2>
 

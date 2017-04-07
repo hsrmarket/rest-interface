@@ -16,3 +16,7 @@ server.pid
 
 .idea/
 .name
+
+*.cache
+
+*.class
