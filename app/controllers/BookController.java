@@ -24,7 +24,7 @@ public class BookController extends Controller {
         this.db = db;
     }
 
-
+/*
     public Result getAll(){
 
         Connection connection = db.getConnection();
@@ -92,4 +92,5 @@ public class BookController extends Controller {
         }
         return badRequest(index.render("Something went wrong"));
     }
+    */
 }

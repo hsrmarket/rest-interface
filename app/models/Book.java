@@ -1,27 +1,18 @@
 package models;
 
-public class Book {
+public class Book extends Article {
 
-    private Integer id;
-    private String iban;
+    private Integer isbn;
     private String author;
+    private String publisher;
 
 
-
-    public int getId() {
-        return id;
+    public Integer getIsbn() {
+        return isbn;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getIban() {
-        return iban;
-    }
-
-    public void setIban(String iban) {
-        this.iban = iban;
+    public void setIsbn(Integer isbn) {
+        this.isbn = isbn;
     }
 
     public String getAuthor() {
@@ -31,4 +22,8 @@ public class Book {
     public void setAuthor(String author) {
         this.author = author;
     }
+
+    public String getPublisher() { return publisher; }
+
+    public void setPublisher(String publisher) { this.publisher = publisher; }
 }
