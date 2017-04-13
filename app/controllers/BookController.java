@@ -6,7 +6,7 @@ import play.db.*;
 import play.libs.Json;
 import play.mvc.*;
 import views.html.*;
-import model.*;
+import models.*;
 
 import javax.inject.Inject;
 import java.sql.Connection;
