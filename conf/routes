@@ -6,8 +6,8 @@
 GET     /                           controllers.HomeController.index
 
 
-GET     /Books                      controllers.BookController.getAll
-POST    /Books                      controllers.BookController.insert
+#GET     /Books                      controllers.BookController.getAll
+#POST    /Books                      controllers.BookController.insert
 
 
 

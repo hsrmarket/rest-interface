@@ -52,15 +52,48 @@
 
 
             <h2>Models</h2>
-            <p>Here you can see the different models and there properties or methodes. They're defined in <code>app/model/</code></p>
-            <h3>Book</h3>
-            <pre><code>public class Book {
+            <p>Here you can see the different models and there properties or methodes. They're defined in <code>app/models/</code></p>
+            <h3>Article</h3>
+            <pre><code>public class Article {
 
     private Integer id;
-    private String iban;
-    private String author;
+    private String name;
+    private Integer cost;
+    private Integer condition;
+    private String description;
 
     //Getters and Setters
+
+}</code></pre>
+
+            <h3>Book</h3>
+            <pre><code>public class Book extends Article{
+
+    private Integer isbn;
+    private String author;
+    private String publisher;
+
+    //Getters and Setters
+
+}</code></pre>
+
+            <h3>Electronic</h3>
+            <pre><code>public class Electronic extends Article{
+
+    private String producer;
+    private Integer modelNr;
+
+    //Getters and Setters
+
+}</code></pre>
+
+            <h3>OfficeSupplies</h3>
+            <pre><code>public class OfficeSupplies extends Article{
+
+}</code></pre>
+
+            <h3>Other</h3>
+            <pre><code>public class Other extends Article{
 
 }</code></pre>
 
