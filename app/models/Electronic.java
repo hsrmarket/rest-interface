@@ -4,7 +4,7 @@ package models;
 public class Electronic extends Article {
 
     private String producer;
-    private String model;
+    private Integer modelNr;
 
 
     public String getProducer() {
@@ -15,11 +15,11 @@ public class Electronic extends Article {
         this.producer = producer;
     }
 
-    public String getModel() {
-        return model;
+    public Integer getModelNr() {
+        return modelNr;
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    public void setModelNr(Integer modelNr) {
+        this.modelNr = modelNr;
     }
 }
