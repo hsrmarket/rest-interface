@@ -1,5 +1,7 @@
 package models;
 
+import java.util.Date;
+
 public class Article {
 
     private Integer id;
@@ -7,6 +9,7 @@ public class Article {
     private Integer price;
     private Integer condition;
     private String description;
+    private Date creationDate;
 
     public Integer getId() {
         return id;
@@ -46,5 +49,13 @@ public class Article {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 }
