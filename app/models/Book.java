@@ -2,16 +2,16 @@ package models;
 
 public class Book extends Article {
 
-    private Integer isbn;
+    private String isbn;
     private String author;
     private String publisher;
 
 
-    public Integer getIsbn() {
+    public String getIsbn() {
         return isbn;
     }
 
-    public void setIsbn(Integer isbn) {
+    public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
 
