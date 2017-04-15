@@ -2,12 +2,23 @@ package controllers;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import play.db.Database;
 import play.libs.Json;
 import play.mvc.Result;
 import play.mvc.Controller;
 import models.*;
 
+import javax.inject.Inject;
+import java.sql.Date;
+
 public class ArticleController extends Controller {
+
+    private Database db;
+
+    @Inject
+    public ArticleController(Database db) {
+        this.db = db;
+    }
 
     public Result insertArticle(){
 
@@ -24,6 +35,9 @@ public class ArticleController extends Controller {
             switch (type) {
 
                 case "book":
+                    Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").textValue()),json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
+                    BookController bc = new BookController(db);
+                    bc.insertBook(book);
                     break;
 
                 case "electronic":
