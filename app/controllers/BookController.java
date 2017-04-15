@@ -5,13 +5,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import play.db.*;
 import play.libs.Json;
 import play.mvc.*;
-import views.html.*;
 import models.*;
 
 import javax.inject.Inject;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 
@@ -23,6 +20,50 @@ public class BookController extends Controller {
     public BookController(Database db) {
         this.db = db;
     }
+
+
+    public Result insertBook(Book book){
+
+        try (
+            Connection connection = db.getConnection();
+            PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+        ){
+            articleStatement.setString(1,book.getName());
+            articleStatement.setString(2,book.getDescription());
+            articleStatement.setInt(3,book.getCondition());
+            articleStatement.setInt(4,book.getPrice());
+            articleStatement.setDate(5,book.getCreationDate());
+
+            int affectedRows = articleStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating book failed, no rows affected.");
+            }
+
+            try (
+                ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+                PreparedStatement bookStatement = connection.prepareStatement("INSERT INTO books (book_id, author, verlag, isbn) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            ) {
+                if (articleGeneratedKeys.next()) {
+                    bookStatement.setInt(1,articleGeneratedKeys.getInt(1));
+                    bookStatement.setString(2,book.getAuthor());
+                    bookStatement.setString(3,book.getPublisher());
+                    bookStatement.setString(4,book.getIsbn());
+                    bookStatement.executeUpdate();
+
+                    book.setId(articleGeneratedKeys.getInt(1));
+
+                }
+                else {
+                    throw new SQLException("Creating book failed, no ID obtained.");
+                }
+            }
+        }catch (SQLException e){
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        }
+        return ok(Json.toJson(book));
+    }
+
 
 /*
     public Result getAll(){
