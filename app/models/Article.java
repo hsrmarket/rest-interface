@@ -11,6 +11,15 @@ public class Article {
     private String description;
     private Date creationDate;
 
+    public Article(Integer id, String name, Integer price, Integer condition, String description, Date creationDate) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.condition = condition;
+        this.description = description;
+        this.creationDate = creationDate;
+    }
+
     public Integer getId() {
         return id;
     }

@@ -1,11 +1,20 @@
 package models;
 
+import java.sql.Date;
+
 public class Book extends Article {
 
     private String isbn;
     private String author;
     private String publisher;
 
+
+    public Book(Integer id, String name, Integer price, Integer condition, String description, Date creationDate, String isbn, String author, String publisher) {
+        super(id, name, price, condition, description, creationDate);
+        this.isbn = isbn;
+        this.author = author;
+        this.publisher = publisher;
+    }
 
     public String getIsbn() {
         return isbn;
