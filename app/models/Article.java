@@ -4,7 +4,7 @@ public class Article {
 
     private Integer id;
     private String name;
-    private Integer cost;
+    private Integer price;
     private Integer condition;
     private String description;
 
@@ -24,12 +24,12 @@ public class Article {
         this.name = name;
     }
 
-    public Integer getCost() {
-        return cost;
+    public Integer getPrice() {
+        return price;
     }
 
-    public void setCost(Integer cost) {
-        this.cost = cost;
+    public void setPrice(Integer price) {
+        this.price = price;
     }
 
     public Integer getCondition() {
