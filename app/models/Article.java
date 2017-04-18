@@ -10,13 +10,15 @@ public class Article {
     private Integer condition;
     private String description;
     private Date creationDate;
+    private String image;
 
-    public Article(String name, Integer price, Integer condition, String description, Date creationDate) {
+    public Article(String name, Integer price, Integer condition, String description, Date creationDate, String image) {
         this.name = name;
         this.price = price;
         this.condition = condition;
         this.description = description;
         this.creationDate = creationDate;
+        this.image = image;
     }
 
     public Integer getId() {
@@ -65,5 +67,13 @@ public class Article {
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

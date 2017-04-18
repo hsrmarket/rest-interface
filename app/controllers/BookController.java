@@ -22,17 +22,31 @@ public class BookController extends Controller {
     }
 
 
+    public Result insertBook(){
+        JsonNode json = request().body().asJson();
+
+        if(json == null) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
+        }
+
+        Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").textValue()),json.findPath("image").textValue(),json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
+        //Book book = new Book("Test",15,5,"Test description",Date.valueOf("2017-04-15"),"test.png","934-23423-23","HSR","HSR");
+        return insertBook(book);
+    }
+
+
     public Result insertBook(Book book){
 
         try (
             Connection connection = db.getConnection();
-            PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
         ){
             articleStatement.setString(1,book.getName());
             articleStatement.setString(2,book.getDescription());
             articleStatement.setInt(3,book.getCondition());
             articleStatement.setInt(4,book.getPrice());
             articleStatement.setDate(5,book.getCreationDate());
+            articleStatement.setString(6,book.getImage());
 
             int affectedRows = articleStatement.executeUpdate();
 
@@ -65,13 +79,35 @@ public class BookController extends Controller {
     }
 
 
+    public Result getAllBooks(){
+
+        try (Connection connection = db.getConnection()){
+
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN books on articles.article_id = books.book_id").executeQuery();
+            ArrayList<Book> list = new ArrayList<>();
+
+            while(resultSet.next()){
+                Book book = new Book(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),resultSet.getString("isbn"),resultSet.getString("author"),resultSet.getString("verlag"));
+                book.setId(resultSet.getInt("article_id"));
+                list.add(book);
+            }
+
+            return ok(Json.toJson(list));
+
+        } catch (SQLException e) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+
+        }
+    }
+
+
 /*
     public Result getAll(){
 
         Connection connection = db.getConnection();
         try {
             ResultSet resultSet = connection.prepareStatement("select id, iban, author from MOCK_DATA").executeQuery();
-            ArrayList<Book> list = new ArrayList<>();;
+            ArrayList<Book> list = new ArrayList<>();
 
             while(resultSet.next()){
                 Book book = new Book();

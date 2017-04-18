@@ -9,8 +9,8 @@ public class Book extends Article {
     private String publisher;
 
 
-    public Book(String name, Integer price, Integer condition, String description, Date creationDate, String isbn, String author, String publisher) {
-        super(name, price, condition, description, creationDate);
+    public Book(String name, Integer price, Integer condition, String description, Date creationDate, String image, String isbn, String author, String publisher) {
+        super(name, price, condition, description, creationDate, image);
         this.isbn = isbn;
         this.author = author;
         this.publisher = publisher;

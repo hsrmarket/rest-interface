@@ -27,18 +27,17 @@ public class ArticleController extends Controller {
         if(json == null) {
             return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
         }else{
-            String type = json.findPath("type").toString();
-            if(type == null){
+            String type = json.findPath("type").textValue();
+            if(type.isEmpty()){
                 return badRequest(Json.toJson(new DefaultErrorMessage(12,"Missing Parameter (type)")));
             }
 
             switch (type) {
 
                 case "book":
-                    Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").textValue()),json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
+                    Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").textValue()),json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue(),json.findPath("image").textValue());
                     BookController bc = new BookController(db);
-                    bc.insertBook(book);
-                    break;
+                    return bc.insertBook(book);
 
                 case "electronic":
                     break;
