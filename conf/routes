@@ -7,6 +7,7 @@ GET     /                                   controllers.HomeController.index
 
 GET     /api/articles                       controllers.ArticleController.getAllArticles
 POST    /api/articles                       controllers.ArticleController.insertArticle
+GET     /api/articles/recent                controllers.ArticleController.getRecentArticles
 
 
 GET     /api/articles/books                 controllers.BookController.getAllBooks

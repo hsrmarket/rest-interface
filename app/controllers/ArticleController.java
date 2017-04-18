@@ -79,5 +79,26 @@ public class ArticleController extends Controller {
         }
     }
 
+    public Result getRecentArticles(){
+
+        try (Connection connection = db.getConnection()){
+
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles ORDER BY creationdate DESC LIMIT 5").executeQuery();
+            ArrayList<Article> list = new ArrayList<>();
+
+            while(resultSet.next()){
+                Article article = new Article(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"));
+                article.setId(resultSet.getInt("article_id"));
+                list.add(article);
+            }
+
+            return ok(Json.toJson(list));
+
+        } catch (SQLException e) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+
+        }
+    }
+
 
 }
