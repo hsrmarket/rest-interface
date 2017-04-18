@@ -9,7 +9,11 @@ import play.mvc.Controller;
 import models.*;
 
 import javax.inject.Inject;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class ArticleController extends Controller {
 
@@ -53,5 +57,27 @@ public class ArticleController extends Controller {
 
         return badRequest(Json.toJson(new DefaultErrorMessage(1,"Something went wrong")));
     }
+
+    public Result getAllArticles(){
+
+        try (Connection connection = db.getConnection()){
+
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles").executeQuery();
+            ArrayList<Article> list = new ArrayList<>();
+
+            while(resultSet.next()){
+                Article article = new Article(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"));
+                article.setId(resultSet.getInt("article_id"));
+                list.add(article);
+            }
+
+            return ok(Json.toJson(list));
+
+        } catch (SQLException e) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+
+        }
+    }
+
 
 }

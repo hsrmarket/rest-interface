@@ -5,11 +5,12 @@
 # An example controller showing a sample home page
 GET     /                                   controllers.HomeController.index
 
+GET     /api/articles                       controllers.ArticleController.getAllArticles
 POST    /api/articles                       controllers.ArticleController.insertArticle
 
 
-POST    /api/articles/books                 controllers.BookController.insertBook
 GET     /api/articles/books                 controllers.BookController.getAllBooks
+POST    /api/articles/books                 controllers.BookController.insertBook
 
 
 GET     /api/articles/electronics           controllers.ElectronicController.getAllElectronics
@@ -17,6 +18,8 @@ GET     /api/articles/electronics           controllers.ElectronicController.get
 
 GET     /api/articles/officesupplies        controllers.OfficeSupplyController.getAllOfficeSupplies
 
+
+GET     /api/articles/other                 controllers.OtherArticleController.getAllOtherArticles
 
 # Map static resources from the /public folder to the /assets URL path
 # Needed for files in the public folder like js or stylesheets etc.
