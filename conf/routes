@@ -21,6 +21,7 @@ GET     /api/articles/officesupplies        controllers.OfficeSupplyController.g
 
 GET     /api/articles/other                 controllers.OtherArticleController.getAllOtherArticles
 
+
 # Map static resources from the /public folder to the /assets URL path
 # Needed for files in the public folder like js or stylesheets etc.
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

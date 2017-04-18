@@ -56,17 +56,17 @@ public class ArticleController extends Controller {
                     OfficeSupplyController osc = new OfficeSupplyController(db);
                     return osc.insertOfficeSupply(officeSupply);
 
-
                 case "other":
-                    break;
+                    OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue());
+                    //Properties checker
+                    OtherArticleController oac = new OtherArticleController(db);
+                    return oac.insertOtherArticle(otherArticle);
 
                 default:
                     return badRequest(Json.toJson(new DefaultErrorMessage(13,"No matching type object")));
 
             }
         }
-
-        return badRequest(Json.toJson(new DefaultErrorMessage(1,"Something went wrong")));
     }
 
     public Result getAllArticles(){

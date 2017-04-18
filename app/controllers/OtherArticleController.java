@@ -1,5 +1,6 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import models.DefaultErrorMessage;
 import models.OtherArticle;
 import play.db.Database;
@@ -7,9 +8,7 @@ import play.libs.Json;
 import play.mvc.*;
 
 import javax.inject.Inject;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class OtherArticleController extends Controller {
@@ -21,6 +20,58 @@ public class OtherArticleController extends Controller {
         this.db = db;
     }
 
+
+    public Result insertOtherArticle(){
+        JsonNode json = request().body().asJson();
+
+        if(json == null) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
+        }
+
+        OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue());
+        //Properties checker
+        return insertOtherArticle(otherArticle);
+    }
+
+    public Result insertOtherArticle(OtherArticle otherArticle){
+
+        try (
+            Connection connection = db.getConnection();
+            PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+        ){
+            articleStatement.setString(1,otherArticle.getName());
+            articleStatement.setString(2,otherArticle.getDescription());
+            articleStatement.setInt(3,otherArticle.getCondition());
+            articleStatement.setInt(4,otherArticle.getPrice());
+            articleStatement.setDate(5,otherArticle.getCreationDate());
+            articleStatement.setString(6,otherArticle.getImage());
+
+            int affectedRows = articleStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating 'other article' failed, no rows affected.");
+            }
+
+            try (
+                    ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+                    PreparedStatement otherArticleStatement = connection.prepareStatement("INSERT INTO otherarticles (otherarticle_id) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+            ) {
+                if (articleGeneratedKeys.next()) {
+                    otherArticleStatement.setInt(1,articleGeneratedKeys.getInt(1));
+                    otherArticleStatement.executeUpdate();
+
+                    otherArticle.setId(articleGeneratedKeys.getInt(1));
+
+                }
+                else {
+                    throw new SQLException("Creating 'other article' failed, no ID obtained.");
+                }
+            }
+        }catch (SQLException e){
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        }
+        return ok(Json.toJson(otherArticle));
+    }
 
     public Result getAllOtherArticles(){
 
