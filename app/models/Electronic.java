@@ -26,7 +26,7 @@ public class Electronic extends Article {
         return model;
     }
 
-    public void setModelNr(String model) {
+    public void setModel(String model) {
         this.model = model;
     }
 }

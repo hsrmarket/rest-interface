@@ -11,11 +11,8 @@ GET     /api/articles/recent                controllers.ArticleController.getRec
 
 
 GET     /api/articles/books                 controllers.BookController.getAllBooks
-POST    /api/articles/books                 controllers.BookController.insertBook
-
 
 GET     /api/articles/electronics           controllers.ElectronicController.getAllElectronics
-
 
 GET     /api/articles/officesupplies        controllers.OfficeSupplyController.getAllOfficeSupplies
 

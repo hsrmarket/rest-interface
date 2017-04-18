@@ -40,17 +40,24 @@ public class ArticleController extends Controller {
 
                 case "book":
                     Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
+                    //Properties checker
                     BookController bc = new BookController(db);
                     return bc.insertBook(book);
 
                 case "electronic":
-                    break;
+                    Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),json.findPath("producer").textValue(),json.findPath("model").textValue());
+                    //Properties checker
+                    ElectronicController ec = new ElectronicController(db);
+                    return ec.insertElectronic(electronic);
 
                 case "office supply":
                     break;
 
                 case "other":
                     break;
+
+                default:
+                    return badRequest(Json.toJson(new DefaultErrorMessage(13,"No matching type object")));
 
             }
         }
