@@ -3,20 +3,19 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
+GET     /                                   controllers.HomeController.index
 
-POST    /api/articles               controllers.ArticleController.insertArticle
-
-
-POST    /api/books                  controllers.BookController.insertBook
-GET     /api/books                  controllers.BookController.getAllBooks
+POST    /api/articles                       controllers.ArticleController.insertArticle
 
 
-GET     /api/electronics            controllers.ElectronicController.getAllElectronics
+POST    /api/articles/books                 controllers.BookController.insertBook
+GET     /api/articles/books                 controllers.BookController.getAllBooks
 
-#GET     /Books                      controllers.BookController.getAll
-#POST    /Books                      controllers.BookController.insert
 
+GET     /api/articles/electronics           controllers.ElectronicController.getAllElectronics
+
+
+GET     /api/articles/officesupplies        controllers.OfficeSupplyController.getAllOfficeSupplies
 
 
 # Map static resources from the /public folder to the /assets URL path
