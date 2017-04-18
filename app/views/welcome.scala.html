@@ -25,31 +25,36 @@
                 </p>
             </blockquote>
 
-            <h2>BookController</h2>
-            <p>Here you can see the book controller. It's implemented in <code>app/controllers/BookController</code>. Be warned this is only pseudocode. It's more to see the return values/objects.</p>
-            <pre><code>public class BookController extends Controller {
+            <h2>Routes</h2>
+            <pre><code>
+    # Routes
+    # This file defines all application routes (Higher priority routes first)
+    # ~~~~
 
-    private Database db;
+    # An example controller showing a sample home page
+    GET     /                                   controllers.HomeController.index
 
-    public Result getAll(){
-        if(error){
-            return badRequest(index.render("Something went wrong"));
-        }else{
-            return ok(Json.toJson(list));
-        }
+    GET     /api/articles                       controllers.ArticleController.getAllArticles
+    POST    /api/articles                       controllers.ArticleController.insertArticle
+    GET     /api/articles/recent                controllers.ArticleController.getRecentArticles
 
-    }
 
-    public Result insert(){
-        if(error){
-            return badRequest(Json.toJson(errorMessage));
-        }else{
-            return ok(Json.toJson(successMessage));
-        }
-            return badRequest(index.render("Something went wrong"));
-    }
-}</code></pre>
+    GET     /api/articles/books                 controllers.BookController.getAllBooks
+    POST    /api/articles/books                 controllers.BookController.insertBook
 
+
+    GET     /api/articles/electronics           controllers.ElectronicController.getAllElectronics
+
+
+    GET     /api/articles/officesupplies        controllers.OfficeSupplyController.getAllOfficeSupplies
+
+
+    GET     /api/articles/other                 controllers.OtherArticleController.getAllOtherArticles
+
+    # Map static resources from the /public folder to the /assets URL path
+    # Needed for files in the public folder like js or stylesheets etc.
+    GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+</code></pre>
 
             <h2>Models</h2>
             <p>Here you can see the different models and there properties or methodes. They're defined in <code>app/models/</code></p>
@@ -61,19 +66,21 @@
     private Integer price;
     private Integer condition;
     private String description;
+    private Date creationDate;
+    private String image;
 
-    //Getters and Setters
+    //Constructor, Getters and Setters
 
 }</code></pre>
 
             <h3>Book</h3>
             <pre><code>public class Book extends Article{
 
-    private Integer isbn;
+    private String isbn;
     private String author;
     private String publisher;
 
-    //Getters and Setters
+    //Constructor, Getters and Setters
 
 }</code></pre>
 
@@ -81,19 +88,23 @@
             <pre><code>public class Electronic extends Article{
 
     private String producer;
-    private Integer modelNr;
+    private String model;
 
-    //Getters and Setters
+    //Constructor, Getters and Setters
 
 }</code></pre>
 
             <h3>OfficeSupply</h3>
             <pre><code>public class OfficeSupply extends Article{
 
+    //Constructor
+
 }</code></pre>
 
             <h3>OtherArticle</h3>
             <pre><code>public class OtherArticle extends Article{
+
+    //Constructor
 
 }</code></pre>
 
