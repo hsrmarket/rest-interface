@@ -51,7 +51,11 @@ public class ArticleController extends Controller {
                     return ec.insertElectronic(electronic);
 
                 case "office supply":
-                    break;
+                    OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue());
+                    //Properties checker
+                    OfficeSupplyController osc = new OfficeSupplyController(db);
+                    return osc.insertOfficeSupply(officeSupply);
+
 
                 case "other":
                     break;
