@@ -11,6 +11,9 @@ POST    /api/articles               controllers.ArticleController.insertArticle
 POST    /api/books                  controllers.BookController.insertBook
 GET     /api/books                  controllers.BookController.getAllBooks
 
+
+GET     /api/electronics            controllers.ElectronicController.getAllElectronics
+
 #GET     /Books                      controllers.BookController.getAll
 #POST    /Books                      controllers.BookController.insert
 

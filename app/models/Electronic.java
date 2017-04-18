@@ -6,12 +6,12 @@ import java.sql.Date;
 public class Electronic extends Article {
 
     private String producer;
-    private Integer modelNr;
+    private String model;
 
-    public Electronic(String name, Integer price, Integer condition, String description, Date creationDate, String producer, Integer modelNr, String image) {
+    public Electronic(String name, Integer price, Integer condition, String description, Date creationDate,  String image, String producer, String model) {
         super(name, price, condition, description, creationDate, image);
         this.producer = producer;
-        this.modelNr = modelNr;
+        this.model = model;
     }
 
     public String getProducer() {
@@ -22,11 +22,11 @@ public class Electronic extends Article {
         this.producer = producer;
     }
 
-    public Integer getModelNr() {
-        return modelNr;
+    public String getModel() {
+        return model;
     }
 
-    public void setModelNr(Integer modelNr) {
-        this.modelNr = modelNr;
+    public void setModelNr(String model) {
+        this.model = model;
     }
 }
