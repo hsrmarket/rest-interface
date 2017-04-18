@@ -26,7 +26,7 @@ public class OtherArticleController extends Controller {
 
         try (Connection connection = db.getConnection()){
 
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN otherarticles on articles.article_id = otherarticles.article_id").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN otherarticles on articles.article_id = otherarticles.otherarticle_id").executeQuery();
             ArrayList<OtherArticle> list = new ArrayList<>();
 
             while(resultSet.next()){

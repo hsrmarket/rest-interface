@@ -39,7 +39,7 @@ public class ArticleController extends Controller {
             switch (type) {
 
                 case "book":
-                    Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").textValue()),json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue(),json.findPath("image").textValue());
+                    Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
                     BookController bc = new BookController(db);
                     return bc.insertBook(book);
 
