@@ -75,6 +75,50 @@ public class OtherArticleController extends Controller {
     }
 
 
+    public Result updateOneOtherArticle(Integer id){
+        JsonNode json = request().body().asJson();
+
+        if(json == null) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
+        }
+
+        if(id == null){
+            return badRequest(Json.toJson(new DefaultErrorMessage(12,"Missing Parameter (ID)")));
+        }
+
+        OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
+        //Properties checker
+        otherArticle.setId(json.findPath("id").intValue());
+        return updateOneOtherArticle(otherArticle);
+    }
+
+
+    public Result updateOneOtherArticle(OtherArticle otherArticle){
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
+        ){
+            articleStatement.setString(1,otherArticle.getName());
+            articleStatement.setString(2,otherArticle.getDescription());
+            articleStatement.setInt(3,otherArticle.getCondition());
+            articleStatement.setInt(4,otherArticle.getPrice());
+            articleStatement.setDate(5,otherArticle.getCreationDate());
+            articleStatement.setString(6,otherArticle.getImage());
+            articleStatement.setInt(7,otherArticle.getId());
+
+            int affectedRows = articleStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Updating 'other article' failed, no rows affected.");
+            }
+
+        }catch (SQLException e){
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        }
+        return ok(Json.toJson(otherArticle));
+    }
+
+
     public Result getAllOtherArticles(){
 
         try (Connection connection = db.getConnection()){
