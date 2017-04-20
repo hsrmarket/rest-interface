@@ -34,6 +34,7 @@ public class OfficeSupplyController extends Controller {
         return insertOfficeSupply(officeSupply);
     }
 
+
     public Result insertOfficeSupply(OfficeSupply officeSupply){
 
         try (
@@ -74,6 +75,7 @@ public class OfficeSupplyController extends Controller {
         return ok(Json.toJson(officeSupply));
     }
 
+
     public Result getAllOfficeSupplies(){
 
         try (Connection connection = db.getConnection()){
@@ -95,4 +97,25 @@ public class OfficeSupplyController extends Controller {
         }
     }
 
+
+    public Result getOneOfficeSupply(Integer id){
+
+        try (Connection connection = db.getConnection()){
+
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN officesupplies on articles.article_id = officesupplies.officesupplie_id WHERE article_id ="+id+"").executeQuery();
+
+            if(resultSet.next()){
+                OfficeSupply officeSupply = new OfficeSupply(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"));
+                officeSupply.setId(resultSet.getInt("article_id"));
+                return ok(Json.toJson(officeSupply));
+            }
+
+            return badRequest(Json.toJson(new DefaultErrorMessage(14,"No office supply with given ID found")));
+
+
+        } catch (SQLException e) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+
+        }
+    }
 }
