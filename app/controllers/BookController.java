@@ -100,4 +100,25 @@ public class BookController extends Controller {
         }
     }
 
+    
+    public Result getOneBook(Integer id){
+
+        try (Connection connection = db.getConnection()){
+
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN books on articles.article_id = books.book_id WHERE article_id ="+id+"").executeQuery();
+
+            if(resultSet.next()){
+                Book book = new Book(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),resultSet.getString("isbn"),resultSet.getString("author"),resultSet.getString("verlag"));
+                book.setId(resultSet.getInt("article_id"));
+                return ok(Json.toJson(book));
+            }
+
+            return badRequest(Json.toJson(new DefaultErrorMessage(14,"No book with given ID found")));
+
+        } catch (SQLException e) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+
+        }
+    }
+
 }
