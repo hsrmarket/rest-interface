@@ -75,6 +75,67 @@ public class ElectronicController extends Controller{
     }
 
 
+    public Result updateOneElectronic(Integer id){
+        JsonNode json = request().body().asJson();
+
+        if(json == null) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
+        }
+
+        if(id == null){
+            return badRequest(Json.toJson(new DefaultErrorMessage(12,"Missing Parameter (ID)")));
+        }
+
+        Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"electronic",json.findPath("producer").textValue(),json.findPath("model").textValue());
+        //Properties checker
+        electronic.setId(id);
+        return updateOneElectronic(electronic);
+    }
+
+
+    public Result updateOneElectronic(Electronic electronic){
+
+        try (
+                Connection connection = db.getConnection();
+                PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
+        ){
+            articleStatement.setString(1,electronic.getName());
+            articleStatement.setString(2,electronic.getDescription());
+            articleStatement.setInt(3,electronic.getCondition());
+            articleStatement.setInt(4,electronic.getPrice());
+            articleStatement.setDate(5,electronic.getCreationDate());
+            articleStatement.setString(6,electronic.getImage());
+            articleStatement.setInt(7,electronic.getId());
+
+            int affectedRows = articleStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Updating electronic failed, no rows affected.");
+            }
+
+            try (
+                    ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+                    PreparedStatement electronicStatement = connection.prepareStatement("UPDATE electronics SET manufacturer = ?, modell = ? WHERE electronic_id = ?", Statement.RETURN_GENERATED_KEYS);
+            ) {
+                if (articleGeneratedKeys.next()) {
+                    electronicStatement.setString(1,electronic.getProducer());
+                    electronicStatement.setString(2,electronic.getModel());
+                    electronicStatement.setInt(3,electronic.getId());
+                    electronicStatement.executeUpdate();
+
+                }
+                else {
+                    throw new SQLException("Updating electronic failed, no ID obtained.");
+                }
+            }
+        }catch (SQLException e){
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        }
+        return ok(Json.toJson(electronic));
+
+    }
+
+
     public Result getAllElectronics(){
         try (Connection connection = db.getConnection()){
 
