@@ -32,6 +32,7 @@ public class ElectronicController extends Controller{
         return insertElectronic(electronic);
     }
 
+
     public Result insertElectronic(Electronic electronic){
         try (
             Connection connection = db.getConnection();
@@ -93,5 +94,27 @@ public class ElectronicController extends Controller{
 
         }
     }
+
+
+    public Result getOneElectronic(Integer id){
+
+        try (Connection connection = db.getConnection()){
+
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN electronics on articles.article_id = electronics.electronic_id WHERE article_id ="+id+"").executeQuery();
+
+            if(resultSet.next()){
+                Electronic electronic = new Electronic(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),resultSet.getString("manufacturer"),resultSet.getString("modell"));
+                electronic.setId(resultSet.getInt("article_id"));
+                return ok(Json.toJson(electronic));
+            }
+
+            return badRequest(Json.toJson(new DefaultErrorMessage(14,"No electronic with given ID found")));
+
+        } catch (SQLException e) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+
+        }
+    }
+
 
 }

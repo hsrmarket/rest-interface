@@ -100,7 +100,7 @@ public class BookController extends Controller {
         }
     }
 
-    
+
     public Result getOneBook(Integer id){
 
         try (Connection connection = db.getConnection()){
