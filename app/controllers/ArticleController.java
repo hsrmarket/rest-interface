@@ -94,42 +94,33 @@ public class ArticleController extends Controller {
 
     public Result getOneArticle(Integer id){
 
-        try (Connection connection = db.getConnection()){
+        try {
+            String table = inWhichTable(id);
+            switch (table){
 
-            ResultSet bookResultSet = connection.prepareStatement("SELECT * FROM books where book_id ="+id+"").executeQuery();
-            ResultSet electronicResultSet = connection.prepareStatement("SELECT * FROM electronics where electronic_id ="+id+"").executeQuery();
-            ResultSet officeSupplyResultSet = connection.prepareStatement("SELECT * FROM officesupplies where officesupplie_id ="+id+"").executeQuery();
-            ResultSet otherArticleResultSet = connection.prepareStatement("SELECT * FROM otherarticles where otherarticle_id ="+id+"").executeQuery();
+                case "books":
+                    BookController bc = new BookController(db);
+                    return bc.getOneBook(id);
 
-            if(bookResultSet.next()){
+                case "electronics":
+                    ElectronicController ec = new ElectronicController(db);
+                    return ec.getOneElectronic(id);
 
-                BookController bc = new BookController(db);
-                return bc.getOneBook(id);
+                case "officeSupplies":
+                    OfficeSupplyController osc = new OfficeSupplyController(db);
+                    return osc.getOneOfficeSupply(id);
 
-            }else if(electronicResultSet.next()){
+                case "otherarticles":
+                    OtherArticleController oac = new OtherArticleController(db);
+                    return oac.getOneOtherArticle(id);
 
-                ElectronicController ec = new ElectronicController(db);
-                return ec.getOneElectronic(id);
-
-            }else if(officeSupplyResultSet.next()){
-
-                OfficeSupplyController osc = new OfficeSupplyController(db);
-                return osc.getOneOfficeSupply(id);
-
-            }else if(otherArticleResultSet.next()){
-
-                OtherArticleController oac = new OtherArticleController(db);
-                return oac.getOneOtherArticle(id);
-
+                default:
+                    return badRequest(Json.toJson(new DefaultErrorMessage(14,"No article with given ID found")));
             }
 
-            return badRequest(Json.toJson(new DefaultErrorMessage(14,"No article with given ID found")));
-
-        } catch (SQLException e) {
+        }catch (SQLException e){
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-
         }
-
     }
 
 
@@ -153,5 +144,29 @@ public class ArticleController extends Controller {
 
         }
     }
-    
+
+
+    private String inWhichTable(Integer id) throws SQLException{
+
+        Connection connection = db.getConnection();
+
+        ResultSet bookResultSet = connection.prepareStatement("SELECT * FROM books where book_id ="+id+"").executeQuery();
+        ResultSet electronicResultSet = connection.prepareStatement("SELECT * FROM electronics where electronic_id ="+id+"").executeQuery();
+        ResultSet officeSupplyResultSet = connection.prepareStatement("SELECT * FROM officesupplies where officesupplie_id ="+id+"").executeQuery();
+        ResultSet otherArticleResultSet = connection.prepareStatement("SELECT * FROM otherarticles where otherarticle_id ="+id+"").executeQuery();
+
+
+        if(bookResultSet.next()){
+            return "books";
+        }else if(electronicResultSet.next()){
+            return "electronics";
+        }else if(officeSupplyResultSet.next()){
+            return "officeSupplies";
+        }else if(otherArticleResultSet.next()){
+            return "otherarticles";
+        }
+
+        return "none";
+    }
+
 }
