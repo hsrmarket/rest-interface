@@ -9,7 +9,6 @@ GET     /api/articles                       controllers.ArticleController.getAll
 POST    /api/articles                       controllers.ArticleController.insertArticle
 GET     /api/articles/recent                controllers.ArticleController.getRecentArticles
 
-
 GET     /api/articles/books                 controllers.BookController.getAllBooks
 
 
@@ -20,6 +19,9 @@ GET     /api/articles/officesupplies        controllers.OfficeSupplyController.g
 
 
 GET     /api/articles/other                 controllers.OtherArticleController.getAllOtherArticles
+
+
+GET     /api/articles/:id                   controllers.ArticleController.getOneArticle(id:Integer)
 
 
 # Map static resources from the /public folder to the /assets URL path

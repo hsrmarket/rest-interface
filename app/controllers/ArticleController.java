@@ -69,6 +69,7 @@ public class ArticleController extends Controller {
         }
     }
 
+
     public Result getAllArticles(){
 
         try (Connection connection = db.getConnection()){
@@ -90,6 +91,48 @@ public class ArticleController extends Controller {
         }
     }
 
+
+    public Result getOneArticle(Integer id){
+
+        try (Connection connection = db.getConnection()){
+
+            ResultSet bookResultSet = connection.prepareStatement("SELECT * FROM books where book_id ="+id+"").executeQuery();
+            ResultSet electronicResultSet = connection.prepareStatement("SELECT * FROM electronics where electronic_id ="+id+"").executeQuery();
+            ResultSet officeSupplyResultSet = connection.prepareStatement("SELECT * FROM officesupplies where officesupplie_id ="+id+"").executeQuery();
+            ResultSet otherArticleResultSet = connection.prepareStatement("SELECT * FROM otherarticles where otherarticle_id ="+id+"").executeQuery();
+
+            if(bookResultSet.next()){
+
+                BookController bc = new BookController(db);
+                return bc.getOneBook(id);
+
+            }else if(electronicResultSet.next()){
+
+                ElectronicController ec = new ElectronicController(db);
+                return ec.getOneElectronic(id);
+
+            }else if(officeSupplyResultSet.next()){
+
+                OfficeSupplyController osc = new OfficeSupplyController(db);
+                return osc.getOneOfficeSupply(id);
+
+            }else if(otherArticleResultSet.next()){
+
+                OtherArticleController oac = new OtherArticleController(db);
+                return oac.getOneOtherArticle(id);
+
+            }
+
+            return badRequest(Json.toJson(new DefaultErrorMessage(14,"No article with given ID found")));
+
+        } catch (SQLException e) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+
+        }
+
+    }
+
+
     public Result getRecentArticles(){
 
         try (Connection connection = db.getConnection()){
@@ -110,6 +153,5 @@ public class ArticleController extends Controller {
 
         }
     }
-
-
+    
 }
