@@ -22,7 +22,7 @@ GET     /api/articles/other                 controllers.OtherArticleController.g
 
 
 GET     /api/articles/:id                   controllers.ArticleController.getOneArticle(id:Integer)
-
+PUT     /api/articles/:id                   controllers.ArticleController.updateOneArticle(id:Integer)
 
 # Map static resources from the /public folder to the /assets URL path
 # Needed for files in the public folder like js or stylesheets etc.

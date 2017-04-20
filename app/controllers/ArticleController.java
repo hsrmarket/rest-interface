@@ -124,6 +124,52 @@ public class ArticleController extends Controller {
     }
 
 
+    public Result updateOneArticle(Integer id){
+        JsonNode json = request().body().asJson();
+
+        if(json == null) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
+        }else if(id == null || json.findPath("type").textValue().isEmpty()){
+            return badRequest(Json.toJson(new DefaultErrorMessage(12,"Missing Parameter (ID or Type)")));
+        }
+
+        switch (json.findPath("type").textValue()){
+
+            case "book":
+                Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
+                book.setId(json.findPath("id").intValue());
+                //Properties checker
+                BookController bc = new BookController(db);
+                return bc.updateOneBook(book);
+
+            case "electronic":
+                Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"electronic",json.findPath("producer").textValue(),json.findPath("model").textValue());
+                electronic.setId(json.findPath("id").intValue());
+                //Properties checker
+                ElectronicController ec = new ElectronicController(db);
+                return ec.updateOneElectronic(electronic);
+
+            case "office supply":
+                OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
+                officeSupply.setId(json.findPath("id").intValue());
+                //Properties checker
+                OfficeSupplyController osc = new OfficeSupplyController(db);
+                return osc.updateOneOfficeSupply(officeSupply);
+
+            case "other":
+                OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
+                otherArticle.setId(json.findPath("id").intValue());
+                //Properties checker
+                OtherArticleController oac = new OtherArticleController(db);
+                return oac.updateOneOtherArticle(otherArticle);
+
+            default:
+                return badRequest(Json.toJson(new DefaultErrorMessage(13,"No matching type object")));
+        }
+
+    }
+
+
     public Result getRecentArticles(){
 
         try (Connection connection = db.getConnection()){
