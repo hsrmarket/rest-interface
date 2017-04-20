@@ -40,7 +40,6 @@
 
 
     GET     /api/articles/books                 controllers.BookController.getAllBooks
-    POST    /api/articles/books                 controllers.BookController.insertBook
 
 
     GET     /api/articles/electronics           controllers.ElectronicController.getAllElectronics
@@ -50,6 +49,10 @@
 
 
     GET     /api/articles/other                 controllers.OtherArticleController.getAllOtherArticles
+
+
+    GET     /api/articles/:id                   controllers.ArticleController.getOneArticle(id:Integer)
+
 
     # Map static resources from the /public folder to the /assets URL path
     # Needed for files in the public folder like js or stylesheets etc.
