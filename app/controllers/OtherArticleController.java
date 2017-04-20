@@ -33,6 +33,7 @@ public class OtherArticleController extends Controller {
         return insertOtherArticle(otherArticle);
     }
 
+
     public Result insertOtherArticle(OtherArticle otherArticle){
 
         try (
@@ -73,6 +74,7 @@ public class OtherArticleController extends Controller {
         return ok(Json.toJson(otherArticle));
     }
 
+
     public Result getAllOtherArticles(){
 
         try (Connection connection = db.getConnection()){
@@ -92,6 +94,28 @@ public class OtherArticleController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
 
         }
+    }
+
+
+    public Result getOneOtherArticle(Integer id){
+
+        try (Connection connection = db.getConnection()){
+
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN otherarticles on articles.article_id = otherarticles.otherarticle_id WHERE article_id ="+id+"").executeQuery();
+
+            if(resultSet.next()){
+                OtherArticle otherArticle = new OtherArticle(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"));
+                otherArticle.setId(resultSet.getInt("article_id"));
+                return ok(Json.toJson(otherArticle));
+            }
+
+            return badRequest(Json.toJson(new DefaultErrorMessage(14,"No other article with given ID found")));
+
+        } catch (SQLException e) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+
+        }
+
     }
 
 }
