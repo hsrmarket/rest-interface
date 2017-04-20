@@ -29,7 +29,7 @@ public class OfficeSupplyController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
         }
 
-        OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue());
+        OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
         //Properties checker
         return insertOfficeSupply(officeSupply);
     }
@@ -84,7 +84,7 @@ public class OfficeSupplyController extends Controller {
             ArrayList<OfficeSupply> list = new ArrayList<>();
 
             while(resultSet.next()){
-                OfficeSupply officeSupply = new OfficeSupply(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"));
+                OfficeSupply officeSupply = new OfficeSupply(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"office supply");
                 officeSupply.setId(resultSet.getInt("article_id"));
                 list.add(officeSupply);
             }
@@ -105,7 +105,7 @@ public class OfficeSupplyController extends Controller {
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN officesupplies on articles.article_id = officesupplies.officesupplie_id WHERE article_id ="+id+"").executeQuery();
 
             if(resultSet.next()){
-                OfficeSupply officeSupply = new OfficeSupply(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"));
+                OfficeSupply officeSupply = new OfficeSupply(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"office supply");
                 officeSupply.setId(resultSet.getInt("article_id"));
                 return ok(Json.toJson(officeSupply));
             }

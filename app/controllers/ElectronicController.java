@@ -27,7 +27,7 @@ public class ElectronicController extends Controller{
             return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
         }
 
-        Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),json.findPath("producer").textValue(),json.findPath("model").textValue());
+        Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"electronic",json.findPath("producer").textValue(),json.findPath("model").textValue());
         //Properties checker
         return insertElectronic(electronic);
     }
@@ -82,7 +82,7 @@ public class ElectronicController extends Controller{
             ArrayList<Electronic> list = new ArrayList<>();
 
             while(resultSet.next()){
-                Electronic electronic = new Electronic(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),resultSet.getString("manufacturer"),resultSet.getString("modell"));
+                Electronic electronic = new Electronic(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"electronic",resultSet.getString("manufacturer"),resultSet.getString("modell"));
                 electronic.setId(resultSet.getInt("article_id"));
                 list.add(electronic);
             }
@@ -103,7 +103,7 @@ public class ElectronicController extends Controller{
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN electronics on articles.article_id = electronics.electronic_id WHERE article_id ="+id+"").executeQuery();
 
             if(resultSet.next()){
-                Electronic electronic = new Electronic(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),resultSet.getString("manufacturer"),resultSet.getString("modell"));
+                Electronic electronic = new Electronic(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"electronic",resultSet.getString("manufacturer"),resultSet.getString("modell"));
                 electronic.setId(resultSet.getInt("article_id"));
                 return ok(Json.toJson(electronic));
             }

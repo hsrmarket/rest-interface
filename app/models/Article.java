@@ -11,14 +11,16 @@ public class Article {
     private String description;
     private Date creationDate;
     private String image;
+    private String type;
 
-    public Article(String name, Integer price, Integer condition, String description, Date creationDate, String image) {
+    public Article(String name, Integer price, Integer condition, String description, Date creationDate, String image, String type) {
         this.name = name;
         this.price = price;
         this.condition = condition;
         this.description = description;
         this.creationDate = creationDate;
         this.image = image;
+        this.type = type;
     }
 
     public Integer getId() {
@@ -77,4 +79,11 @@ public class Article {
         this.image = image;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

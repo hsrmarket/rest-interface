@@ -39,25 +39,25 @@ public class ArticleController extends Controller {
             switch (type) {
 
                 case "book":
-                    Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
+                    Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
                     //Properties checker
                     BookController bc = new BookController(db);
                     return bc.insertBook(book);
 
                 case "electronic":
-                    Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),json.findPath("producer").textValue(),json.findPath("model").textValue());
+                    Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"electronic",json.findPath("producer").textValue(),json.findPath("model").textValue());
                     //Properties checker
                     ElectronicController ec = new ElectronicController(db);
                     return ec.insertElectronic(electronic);
 
                 case "office supply":
-                    OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue());
+                    OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
                     //Properties checker
                     OfficeSupplyController osc = new OfficeSupplyController(db);
                     return osc.insertOfficeSupply(officeSupply);
 
                 case "other":
-                    OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue());
+                    OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
                     //Properties checker
                     OtherArticleController oac = new OtherArticleController(db);
                     return oac.insertOtherArticle(otherArticle);
@@ -78,7 +78,7 @@ public class ArticleController extends Controller {
             ArrayList<Article> list = new ArrayList<>();
 
             while(resultSet.next()){
-                Article article = new Article(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"));
+                Article article = new Article(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"article");
                 article.setId(resultSet.getInt("article_id"));
                 list.add(article);
             }
@@ -132,7 +132,7 @@ public class ArticleController extends Controller {
             ArrayList<Article> list = new ArrayList<>();
 
             while(resultSet.next()){
-                Article article = new Article(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"));
+                Article article = new Article(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"article");
                 article.setId(resultSet.getInt("article_id"));
                 list.add(article);
             }

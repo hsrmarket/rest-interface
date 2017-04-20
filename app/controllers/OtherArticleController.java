@@ -28,7 +28,7 @@ public class OtherArticleController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
         }
 
-        OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue());
+        OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
         //Properties checker
         return insertOtherArticle(otherArticle);
     }
@@ -83,7 +83,7 @@ public class OtherArticleController extends Controller {
             ArrayList<OtherArticle> list = new ArrayList<>();
 
             while(resultSet.next()){
-                OtherArticle otherArticle = new OtherArticle(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"));
+                OtherArticle otherArticle = new OtherArticle(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"other");
                 otherArticle.setId(resultSet.getInt("article_id"));
                 list.add(otherArticle);
             }
@@ -104,7 +104,7 @@ public class OtherArticleController extends Controller {
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN otherarticles on articles.article_id = otherarticles.otherarticle_id WHERE article_id ="+id+"").executeQuery();
 
             if(resultSet.next()){
-                OtherArticle otherArticle = new OtherArticle(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"));
+                OtherArticle otherArticle = new OtherArticle(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"other");
                 otherArticle.setId(resultSet.getInt("article_id"));
                 return ok(Json.toJson(otherArticle));
             }

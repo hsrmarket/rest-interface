@@ -8,8 +8,8 @@ public class Electronic extends Article {
     private String producer;
     private String model;
 
-    public Electronic(String name, Integer price, Integer condition, String description, Date creationDate,  String image, String producer, String model) {
-        super(name, price, condition, description, creationDate, image);
+    public Electronic(String name, Integer price, Integer condition, String description, Date creationDate,  String image, String type, String producer, String model) {
+        super(name, price, condition, description, creationDate, image, type);
         this.producer = producer;
         this.model = model;
     }
