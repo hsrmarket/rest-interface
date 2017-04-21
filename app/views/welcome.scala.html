@@ -52,6 +52,7 @@
 
 
     GET     /api/articles/:id                   controllers.ArticleController.getOneArticle(id:Integer)
+    PUT     /api/articles/:id                   controllers.ArticleController.updateOneArticle(id:Integer)
 
 
     # Map static resources from the /public folder to the /assets URL path
@@ -131,6 +132,21 @@
     //Getters and Setters
 
 }</code></pre>
+
+            <h2>Error Codes</h2>
+            <table>
+                <tr>
+                    <th>Code</th>
+                    <th>Description</th>
+                </tr>
+                <tr><td>1</td><td>Something went wrong</td></tr>
+                <tr><td>11</td><td>Expecting Json Data</td></tr>
+                <tr><td>12</td><td>Missing Parameter</td></tr>
+                <tr><td>13</td><td>No matching type object</td></tr>
+                <tr><td>14</td><td>No ID found</td></tr>
+            </table>
+
+
 
             <h2>Need more info on the console?</h2>
 
