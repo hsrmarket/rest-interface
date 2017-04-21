@@ -32,7 +32,7 @@ public class ArticleController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
         }else{
             String type = json.findPath("type").textValue();
-            if(type.isEmpty()){
+            if(type == null || type.isEmpty()){
                 return badRequest(Json.toJson(new DefaultErrorMessage(12,"Missing Parameter (type)")));
             }
 
