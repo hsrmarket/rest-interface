@@ -2,15 +2,28 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /Books                           controllers.BookController.getAll
-POST    /Books                           controllers.BookController.insert
-
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
-# An example controller showing how to use dependency injection
-GET     /count                      controllers.CountController.count
-# An example controller showing how to write asynchronous code
-GET     /message                    controllers.AsyncController.message
+GET     /                                   controllers.HomeController.index
+
+GET     /api/articles                       controllers.ArticleController.getAllArticles
+POST    /api/articles                       controllers.ArticleController.insertArticle
+GET     /api/articles/recent                controllers.ArticleController.getRecentArticles
+
+GET     /api/articles/books                 controllers.BookController.getAllBooks
+
+
+GET     /api/articles/electronics           controllers.ElectronicController.getAllElectronics
+
+
+GET     /api/articles/officesupplies        controllers.OfficeSupplyController.getAllOfficeSupplies
+
+
+GET     /api/articles/other                 controllers.OtherArticleController.getAllOtherArticles
+
+
+GET     /api/articles/:id                   controllers.ArticleController.getOneArticle(id:Integer)
+PUT     /api/articles/:id                   controllers.ArticleController.updateOneArticle(id:Integer)
 
 # Map static resources from the /public folder to the /assets URL path
+# Needed for files in the public folder like js or stylesheets etc.
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
