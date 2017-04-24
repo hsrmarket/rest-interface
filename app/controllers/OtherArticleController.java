@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class OtherArticleController extends Controller {
 
     private Database db;
+    private Connection connection;
 
     @Inject
     public OtherArticleController(Database db) {
@@ -36,10 +37,10 @@ public class OtherArticleController extends Controller {
 
     public Result insertOtherArticle(OtherArticle otherArticle){
 
-        try (
-            Connection connection = db.getConnection();
+        try {
+            connection = db.getConnection();
             PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-        ){
+
             articleStatement.setString(1,otherArticle.getName());
             articleStatement.setString(2,otherArticle.getDescription());
             articleStatement.setInt(3,otherArticle.getCondition());
@@ -53,23 +54,29 @@ public class OtherArticleController extends Controller {
                 throw new SQLException("Creating 'other article' failed, no rows affected.");
             }
 
-            try (
-                    ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
-                    PreparedStatement otherArticleStatement = connection.prepareStatement("INSERT INTO otherarticles (otherarticle_id) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
-            ) {
-                if (articleGeneratedKeys.next()) {
-                    otherArticleStatement.setInt(1,articleGeneratedKeys.getInt(1));
-                    otherArticleStatement.executeUpdate();
 
-                    otherArticle.setId(articleGeneratedKeys.getInt(1));
+            ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+            PreparedStatement otherArticleStatement = connection.prepareStatement("INSERT INTO otherarticles (otherarticle_id) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
 
-                }
-                else {
-                    throw new SQLException("Creating 'other article' failed, no ID obtained.");
-                }
+            if (articleGeneratedKeys.next()) {
+                otherArticleStatement.setInt(1,articleGeneratedKeys.getInt(1));
+                otherArticleStatement.executeUpdate();
+
+                otherArticle.setId(articleGeneratedKeys.getInt(1));
+
             }
+            else {
+                throw new SQLException("Creating 'other article' failed, no ID obtained.");
+            }
+
         }catch (SQLException e){
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
         return ok(Json.toJson(otherArticle));
     }
@@ -94,10 +101,10 @@ public class OtherArticleController extends Controller {
 
 
     public Result updateOneOtherArticle(OtherArticle otherArticle){
-        try (
-                Connection connection = db.getConnection();
-                PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
-        ){
+        try {
+            connection = db.getConnection();
+            PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
+
             articleStatement.setString(1,otherArticle.getName());
             articleStatement.setString(2,otherArticle.getDescription());
             articleStatement.setInt(3,otherArticle.getCondition());
@@ -114,14 +121,22 @@ public class OtherArticleController extends Controller {
 
         }catch (SQLException e){
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
+
         return ok(Json.toJson(otherArticle));
     }
 
 
     public Result getAllOtherArticles(){
 
-        try (Connection connection = db.getConnection()){
+        try {
+            connection = db.getConnection();
 
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN otherarticles on articles.article_id = otherarticles.otherarticle_id").executeQuery();
             ArrayList<OtherArticle> list = new ArrayList<>();
@@ -137,14 +152,20 @@ public class OtherArticleController extends Controller {
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
 
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
     }
 
 
     public Result getOneOtherArticle(Integer id){
 
-        try (Connection connection = db.getConnection()){
-
+        try {
+            connection = db.getConnection();
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN otherarticles on articles.article_id = otherarticles.otherarticle_id WHERE article_id ="+id+"").executeQuery();
 
             if(resultSet.next()){
@@ -158,6 +179,12 @@ public class OtherArticleController extends Controller {
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
 
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
 
     }

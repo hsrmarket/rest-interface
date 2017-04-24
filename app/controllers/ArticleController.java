@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class ArticleController extends Controller {
 
     private Database db;
+    private Connection connection;
 
     @Inject
     public ArticleController(Database db) {
@@ -72,8 +73,8 @@ public class ArticleController extends Controller {
 
     public Result getAllArticles(){
 
-        try (Connection connection = db.getConnection()){
-
+        try {
+            connection = db.getConnection();
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles").executeQuery();
             ArrayList<Article> list = new ArrayList<>();
 
@@ -88,6 +89,12 @@ public class ArticleController extends Controller {
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
 
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
     }
 
@@ -172,8 +179,8 @@ public class ArticleController extends Controller {
 
     public Result getRecentArticles(){
 
-        try (Connection connection = db.getConnection()){
-
+        try {
+            connection = db.getConnection();
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles ORDER BY creationdate DESC LIMIT 5").executeQuery();
             ArrayList<Article> list = new ArrayList<>();
 
@@ -188,6 +195,12 @@ public class ArticleController extends Controller {
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
 
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
     }
 
