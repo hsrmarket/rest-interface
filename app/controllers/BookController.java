@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class BookController extends Controller {
 
     private Database db;
+    private Connection connection;
 
     @Inject
     public BookController(Database db) {
@@ -37,10 +38,10 @@ public class BookController extends Controller {
 
     public Result insertBook(Book book){
 
-        try (
-            Connection connection = db.getConnection();
+        try {
+            connection = db.getConnection();
             PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-        ){
+
             articleStatement.setString(1,book.getName());
             articleStatement.setString(2,book.getDescription());
             articleStatement.setInt(3,book.getCondition());
@@ -54,26 +55,32 @@ public class BookController extends Controller {
                 throw new SQLException("Creating book failed, no rows affected.");
             }
 
-            try (
-                ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
-                PreparedStatement bookStatement = connection.prepareStatement("INSERT INTO books (book_id, author, publisher, isbn) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            ) {
-                if (articleGeneratedKeys.next()) {
-                    bookStatement.setInt(1,articleGeneratedKeys.getInt(1));
-                    bookStatement.setString(2,book.getAuthor());
-                    bookStatement.setString(3,book.getPublisher());
-                    bookStatement.setString(4,book.getIsbn());
-                    bookStatement.executeUpdate();
 
-                    book.setId(articleGeneratedKeys.getInt(1));
+            ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+            PreparedStatement bookStatement = connection.prepareStatement("INSERT INTO books (book_id, author, publisher, isbn) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
-                }
-                else {
-                    throw new SQLException("Creating book failed, no ID obtained.");
-                }
+            if (articleGeneratedKeys.next()) {
+                bookStatement.setInt(1,articleGeneratedKeys.getInt(1));
+                bookStatement.setString(2,book.getAuthor());
+                bookStatement.setString(3,book.getPublisher());
+                bookStatement.setString(4,book.getIsbn());
+                bookStatement.executeUpdate();
+
+                book.setId(articleGeneratedKeys.getInt(1));
+
             }
+            else {
+                throw new SQLException("Creating book failed, no ID obtained.");
+            }
+
         }catch (SQLException e){
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
         return ok(Json.toJson(book));
     }
@@ -99,10 +106,10 @@ public class BookController extends Controller {
 
     public Result updateOneBook(Book book){
 
-        try (
-                Connection connection = db.getConnection();
-                PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
-        ){
+        try {
+            connection = db.getConnection();
+            PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
+
             articleStatement.setString(1,book.getName());
             articleStatement.setString(2,book.getDescription());
             articleStatement.setInt(3,book.getCondition());
@@ -117,24 +124,29 @@ public class BookController extends Controller {
                 throw new SQLException("Updating book failed, no rows affected.");
             }
 
-            try (
-                    ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
-                    PreparedStatement bookStatement = connection.prepareStatement("UPDATE books SET author = ?, publisher = ?, isbn = ? WHERE book_id = ?", Statement.RETURN_GENERATED_KEYS);
-            ) {
-                if (articleGeneratedKeys.next()) {
-                    bookStatement.setString(1,book.getAuthor());
-                    bookStatement.setString(2,book.getPublisher());
-                    bookStatement.setString(3,book.getIsbn());
-                    bookStatement.setInt(4,book.getId());
-                    bookStatement.executeUpdate();
 
-                }
-                else {
-                    throw new SQLException("Updating book failed, no ID obtained.");
-                }
+            ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+            PreparedStatement bookStatement = connection.prepareStatement("UPDATE books SET author = ?, publisher = ?, isbn = ? WHERE book_id = ?", Statement.RETURN_GENERATED_KEYS);
+
+            if (articleGeneratedKeys.next()) {
+                bookStatement.setString(1,book.getAuthor());
+                bookStatement.setString(2,book.getPublisher());
+                bookStatement.setString(3,book.getIsbn());
+                bookStatement.setInt(4,book.getId());
+                bookStatement.executeUpdate();
+
+            } else {
+                throw new SQLException("Updating book failed, no ID obtained.");
             }
+
         }catch (SQLException e){
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
 
         return ok(Json.toJson(book));
@@ -144,8 +156,8 @@ public class BookController extends Controller {
 
     public Result getAllBooks(){
 
-        try (Connection connection = db.getConnection()){
-
+        try {
+            connection = db.getConnection();
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN books on articles.article_id = books.book_id").executeQuery();
             ArrayList<Book> list = new ArrayList<>();
 
@@ -160,14 +172,20 @@ public class BookController extends Controller {
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
 
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
     }
 
 
     public Result getOneBook(Integer id){
 
-        try (Connection connection = db.getConnection()){
-
+        try {
+            connection = db.getConnection();
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN books on articles.article_id = books.book_id WHERE article_id ="+id+"").executeQuery();
 
             if(resultSet.next()){
@@ -181,6 +199,12 @@ public class BookController extends Controller {
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
 
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
     }
 

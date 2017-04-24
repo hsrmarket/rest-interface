@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class OfficeSupplyController extends Controller {
 
     private Database db;
+    private Connection connection;
 
     @Inject
     public OfficeSupplyController(Database db) {
@@ -37,10 +38,10 @@ public class OfficeSupplyController extends Controller {
 
     public Result insertOfficeSupply(OfficeSupply officeSupply){
 
-        try (
-            Connection connection = db.getConnection();
+        try {
+            connection = db.getConnection();
             PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-        ){
+
             articleStatement.setString(1,officeSupply.getName());
             articleStatement.setString(2,officeSupply.getDescription());
             articleStatement.setInt(3,officeSupply.getCondition());
@@ -54,23 +55,29 @@ public class OfficeSupplyController extends Controller {
                 throw new SQLException("Creating office supply failed, no rows affected.");
             }
 
-            try (
-                    ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
-                    PreparedStatement officeSupplyStatement = connection.prepareStatement("INSERT INTO officesupplies (officesupplie_id) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
-            ) {
-                if (articleGeneratedKeys.next()) {
-                    officeSupplyStatement.setInt(1,articleGeneratedKeys.getInt(1));
-                    officeSupplyStatement.executeUpdate();
 
-                    officeSupply.setId(articleGeneratedKeys.getInt(1));
+            ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+            PreparedStatement officeSupplyStatement = connection.prepareStatement("INSERT INTO officesupplies (officesupplie_id) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
 
-                }
-                else {
-                    throw new SQLException("Creating office supply failed, no ID obtained.");
-                }
+            if (articleGeneratedKeys.next()) {
+                officeSupplyStatement.setInt(1,articleGeneratedKeys.getInt(1));
+                officeSupplyStatement.executeUpdate();
+
+                officeSupply.setId(articleGeneratedKeys.getInt(1));
+
             }
+            else {
+                throw new SQLException("Creating office supply failed, no ID obtained.");
+            }
+
         }catch (SQLException e){
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
         return ok(Json.toJson(officeSupply));
     }
@@ -96,10 +103,10 @@ public class OfficeSupplyController extends Controller {
 
     public Result updateOneOfficeSupply(OfficeSupply officeSupply){
 
-        try (
-                Connection connection = db.getConnection();
-                PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
-        ){
+        try {
+            connection = db.getConnection();
+            PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
+
             articleStatement.setString(1,officeSupply.getName());
             articleStatement.setString(2,officeSupply.getDescription());
             articleStatement.setInt(3,officeSupply.getCondition());
@@ -117,7 +124,14 @@ public class OfficeSupplyController extends Controller {
 
         }catch (SQLException e){
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
+
         return ok(Json.toJson(officeSupply));
 
     }
@@ -125,7 +139,8 @@ public class OfficeSupplyController extends Controller {
 
     public Result getAllOfficeSupplies(){
 
-        try (Connection connection = db.getConnection()){
+        try {
+            connection = db.getConnection();
 
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN officesupplies on articles.article_id = officesupplies.officesupplie_id;").executeQuery();
             ArrayList<OfficeSupply> list = new ArrayList<>();
@@ -141,13 +156,20 @@ public class OfficeSupplyController extends Controller {
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
 
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
     }
 
 
     public Result getOneOfficeSupply(Integer id){
 
-        try (Connection connection = db.getConnection()){
+        try {
+            connection = db.getConnection();
 
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN officesupplies on articles.article_id = officesupplies.officesupplie_id WHERE article_id ="+id+"").executeQuery();
 
@@ -159,10 +181,15 @@ public class OfficeSupplyController extends Controller {
 
             return badRequest(Json.toJson(new DefaultErrorMessage(14,"No office supply with given ID found")));
 
-
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
 
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
     }
 }

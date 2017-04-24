@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class ElectronicController extends Controller{
 
     private Database db;
+    private Connection connection;
 
     @Inject
     public ElectronicController(Database db) {
@@ -34,10 +35,10 @@ public class ElectronicController extends Controller{
 
 
     public Result insertElectronic(Electronic electronic){
-        try (
-            Connection connection = db.getConnection();
+        try {
+            connection = db.getConnection();
             PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-        ){
+
             articleStatement.setString(1,electronic.getName());
             articleStatement.setString(2,electronic.getDescription());
             articleStatement.setInt(3,electronic.getCondition());
@@ -51,26 +52,33 @@ public class ElectronicController extends Controller{
                 throw new SQLException("Creating electronic failed, no rows affected.");
             }
 
-            try (
-                ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
-                PreparedStatement electronicStatement = connection.prepareStatement("INSERT INTO electronics (electronic_id, manufacturer, modell) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            ) {
-                if (articleGeneratedKeys.next()) {
-                    electronicStatement.setInt(1,articleGeneratedKeys.getInt(1));
-                    electronicStatement.setString(2,electronic.getProducer());
-                    electronicStatement.setString(3,electronic.getModel());
-                    electronicStatement.executeUpdate();
 
-                    electronic.setId(articleGeneratedKeys.getInt(1));
+            ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+            PreparedStatement electronicStatement = connection.prepareStatement("INSERT INTO electronics (electronic_id, manufacturer, modell) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
-                }
-                else {
-                    throw new SQLException("Creating electronic failed, no ID obtained.");
-                }
+            if (articleGeneratedKeys.next()) {
+                electronicStatement.setInt(1,articleGeneratedKeys.getInt(1));
+                electronicStatement.setString(2,electronic.getProducer());
+                electronicStatement.setString(3,electronic.getModel());
+                electronicStatement.executeUpdate();
+
+                electronic.setId(articleGeneratedKeys.getInt(1));
+
             }
+            else {
+                throw new SQLException("Creating electronic failed, no ID obtained.");
+            }
+
         }catch (SQLException e){
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
+
         return ok(Json.toJson(electronic));
     }
 
@@ -95,10 +103,10 @@ public class ElectronicController extends Controller{
 
     public Result updateOneElectronic(Electronic electronic){
 
-        try (
-                Connection connection = db.getConnection();
-                PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
-        ){
+        try {
+            connection = db.getConnection();
+            PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
+
             articleStatement.setString(1,electronic.getName());
             articleStatement.setString(2,electronic.getDescription());
             articleStatement.setInt(3,electronic.getCondition());
@@ -113,31 +121,39 @@ public class ElectronicController extends Controller{
                 throw new SQLException("Updating electronic failed, no rows affected.");
             }
 
-            try (
-                    ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
-                    PreparedStatement electronicStatement = connection.prepareStatement("UPDATE electronics SET manufacturer = ?, modell = ? WHERE electronic_id = ?", Statement.RETURN_GENERATED_KEYS);
-            ) {
-                if (articleGeneratedKeys.next()) {
-                    electronicStatement.setString(1,electronic.getProducer());
-                    electronicStatement.setString(2,electronic.getModel());
-                    electronicStatement.setInt(3,electronic.getId());
-                    electronicStatement.executeUpdate();
 
-                }
-                else {
-                    throw new SQLException("Updating electronic failed, no ID obtained.");
-                }
+            ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+            PreparedStatement electronicStatement = connection.prepareStatement("UPDATE electronics SET manufacturer = ?, modell = ? WHERE electronic_id = ?", Statement.RETURN_GENERATED_KEYS);
+
+            if (articleGeneratedKeys.next()) {
+                electronicStatement.setString(1,electronic.getProducer());
+                electronicStatement.setString(2,electronic.getModel());
+                electronicStatement.setInt(3,electronic.getId());
+                electronicStatement.executeUpdate();
+
             }
+            else {
+                throw new SQLException("Updating electronic failed, no ID obtained.");
+            }
+
         }catch (SQLException e){
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
+
         return ok(Json.toJson(electronic));
 
     }
 
 
     public Result getAllElectronics(){
-        try (Connection connection = db.getConnection()){
+        try {
+            connection = db.getConnection();
 
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN electronics on articles.article_id = electronics.electronic_id;").executeQuery();
             ArrayList<Electronic> list = new ArrayList<>();
@@ -153,13 +169,20 @@ public class ElectronicController extends Controller{
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
 
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
     }
 
 
     public Result getOneElectronic(Integer id){
 
-        try (Connection connection = db.getConnection()){
+        try {
+            connection = db.getConnection();
 
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN electronics on articles.article_id = electronics.electronic_id WHERE article_id ="+id+"").executeQuery();
 
@@ -174,6 +197,12 @@ public class ElectronicController extends Controller{
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
 
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
     }
 
