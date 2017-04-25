@@ -26,7 +26,6 @@ GET     /api/accounts/:id                   controllers.AccountController.getOne
 DELETE  /api/accounts/:id                   controllers.AccountController.deleteAccount(id:Integer)
 
 
-
 # Map static resources from the /public folder to the /assets URL path
 # Needed for files in the public folder like js or stylesheets etc.
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
