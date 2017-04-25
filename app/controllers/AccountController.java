@@ -5,6 +5,7 @@ import models.Account;
 import models.Address;
 import models.DefaultErrorMessage;
 import models.DefaultSuccessMessage;
+import org.h2.command.Prepared;
 import play.db.Database;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -57,7 +58,7 @@ public class AccountController extends Controller {
             }
 
             ResultSet addressGeneratedKeys = addressStatement.getGeneratedKeys();
-            PreparedStatement accountStatement = connection.prepareStatement("INSERT INTO accounts (address_id, firstname, lastname, studentid, email, tel, pw, isadmin,) VALUES (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement accountStatement = connection.prepareStatement("INSERT INTO accounts (address_id, firstname, lastname, studentid, email, tel, pw, isadmin) VALUES (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
             if (addressGeneratedKeys.next()) {
                 accountStatement.setInt(1,addressGeneratedKeys.getInt(1));
@@ -70,9 +71,12 @@ public class AccountController extends Controller {
                 accountStatement.setBoolean(8,account.isAdmin());
 
                 accountStatement.executeUpdate();
+
                 ResultSet accountGeneratedKeys = accountStatement.getGeneratedKeys();
 
+                accountGeneratedKeys.next();
                 account.setId(accountGeneratedKeys.getInt(1));
+                account.getAddress().setId(addressGeneratedKeys.getInt(1));
 
             }
             else {
@@ -95,13 +99,15 @@ public class AccountController extends Controller {
     public Result deleteAccount(Integer id){
         try {
             connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT address_id FROM accounts WHERE account_id ='"+id+"'").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT address_id FROM accounts WHERE account_id ="+id+"").executeQuery();
 
             if(resultSet.next()){
                 Integer addressID = resultSet.getInt("address_id");
 
-                ResultSet deleteAccountResultSet = connection.prepareStatement("DELETE FROM accounts WHERE account_id ='"+id+"'").executeQuery();
-                ResultSet deleteAddressResultSet = connection.prepareStatement("DELETE FROM address WHERE address_id ='"+addressID+"'").executeQuery();
+                PreparedStatement deleteAccountStatement = connection.prepareStatement("DELETE FROM accounts WHERE account_id = "+id+"", Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement deleteAddressStatement = connection.prepareStatement("DELETE FROM address WHERE address_id = "+addressID+"", Statement.RETURN_GENERATED_KEYS);
+                deleteAccountStatement.executeUpdate();
+                deleteAddressStatement.executeUpdate();
 
                 return ok(Json.toJson(new DefaultSuccessMessage(0, "Account successfully deleted")));
             }
