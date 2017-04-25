@@ -7,7 +7,7 @@ import play.test.*;
 import static org.junit.Assert.assertEquals;
 import static play.test.Helpers.*;
 
-public class GetOneTests extends WithApplication {
+public class GetOneArticleTests extends WithApplication {
 
     @Test
     public void getOneArticleTest(){

@@ -5,7 +5,6 @@ import models.Account;
 import models.Address;
 import models.DefaultErrorMessage;
 import models.DefaultSuccessMessage;
-import org.h2.command.Prepared;
 import play.db.Database;
 import play.libs.Json;
 import play.mvc.Controller;

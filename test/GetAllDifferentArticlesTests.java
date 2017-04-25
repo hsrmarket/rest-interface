@@ -8,7 +8,7 @@ import play.test.*;
 import static org.junit.Assert.assertEquals;
 import static play.test.Helpers.*;
 
-public class GetAllTests extends WithApplication {
+public class GetAllDifferentArticlesTests extends WithApplication {
 
     @Test
     public void getAllArticlesTest(){

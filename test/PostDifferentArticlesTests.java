@@ -12,7 +12,7 @@ import static play.mvc.Http.Status.OK;
 import play.test.*;
 import static play.test.Helpers.*;
 
-public class PostTests extends WithApplication{
+public class PostDifferentArticlesTests extends WithApplication{
 
     @Test
     public void postBookTest(){
@@ -100,7 +100,7 @@ public class PostTests extends WithApplication{
     }
 
     @Test
-    public void postOfficeSupplyThatNotExistsTest(){
+    public void postTypeThatNotExistsTest(){
         String body = "{\"name\":\"JUnitOfficeSupply\", \"price\":15, \"condition\":5, \"description\":\"This office supply was created with the JUnit Test\",\"creationDate\":\"2017-04-21\",\"image\":\"test.png\",\"type\":\"this type does not exist\"}";
 
         JsonNode jsonNode = Json.parse(body);
