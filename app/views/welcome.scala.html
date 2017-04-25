@@ -37,23 +37,22 @@
     GET     /api/articles                       controllers.ArticleController.getAllArticles
     POST    /api/articles                       controllers.ArticleController.insertArticle
     GET     /api/articles/recent                controllers.ArticleController.getRecentArticles
-
-
     GET     /api/articles/books                 controllers.BookController.getAllBooks
-
-
     GET     /api/articles/electronics           controllers.ElectronicController.getAllElectronics
-
-
     GET     /api/articles/officesupplies        controllers.OfficeSupplyController.getAllOfficeSupplies
-
-
     GET     /api/articles/other                 controllers.OtherArticleController.getAllOtherArticles
-
 
     GET     /api/articles/:id                   controllers.ArticleController.getOneArticle(id:Integer)
     PUT     /api/articles/:id                   controllers.ArticleController.updateOneArticle(id:Integer)
 
+
+    GET     /api/accounts                       controllers.AccountController.getAllAccounts
+    POST    /api/accounts                       controllers.AccountController.insertAccount
+    GET     /api/accounts/admin                 controllers.AccountController.getAdminAccounts
+    GET     /api/accounts/normal                controllers.AccountController.getNormalAccounts
+
+    GET     /api/accounts/:id                   controllers.AccountController.getOneAccount(id:Integer)
+    DELETE  /api/accounts/:id                   controllers.AccountController.deleteAccount(id:Integer)
 
     # Map static resources from the /public folder to the /assets URL path
     # Needed for files in the public folder like js or stylesheets etc.
@@ -113,13 +112,43 @@
 
 }</code></pre>
 
+            <h3>Account</h3>
+            <pre><code>public class Account {
+
+    private Integer id;
+    private Integer studentId;
+    private String firstname;
+    private String lastname;
+    private Address address;
+    private String email;
+    private String telephone;
+    private String password;
+    private boolean isAdmin;
+
+    //Constructor, Getters and Setters
+
+}</code></pre>
+
+            <h3>Address</h3>
+            <pre><code>public class Address {
+
+    private Integer id;
+    private String street;
+    private String streetNr;
+    private Integer zip;
+    private String city;
+
+    //constructor, Getters and Setters
+                
+}</code></pre>
+
             <h3>DefaultSuccessMessage</h3>
             <pre><code>public class DefaultSuccessMessage {
 
     private Integer id;
     private String message;
 
-    //Getters and Setters
+    //Constructor, Getters and Setters
 
 }</code></pre>
 
@@ -129,7 +158,7 @@
     private Integer id;
     private String message;
 
-    //Getters and Setters
+    //Constructor, Getters and Setters
 
 }</code></pre>
 

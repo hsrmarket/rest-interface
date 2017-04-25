@@ -22,8 +22,8 @@ POST    /api/accounts                       controllers.AccountController.insert
 GET     /api/accounts/admin                 controllers.AccountController.getAdminAccounts
 GET     /api/accounts/normal                controllers.AccountController.getNormalAccounts
 
-GET     /api/accounts/:id                    controllers.AccountController.getOneAccount(id:Integer)
-DELETE  /api/accounts/:id                    controllers.AccountController.deleteAccount(id:Integer)
+GET     /api/accounts/:id                   controllers.AccountController.getOneAccount(id:Integer)
+DELETE  /api/accounts/:id                   controllers.AccountController.deleteAccount(id:Integer)
 
 
 
