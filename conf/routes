@@ -13,13 +13,17 @@ GET     /api/articles/electronics           controllers.ElectronicController.get
 GET     /api/articles/officesupplies        controllers.OfficeSupplyController.getAllOfficeSupplies
 GET     /api/articles/other                 controllers.OtherArticleController.getAllOtherArticles
 
-
 GET     /api/articles/:id                   controllers.ArticleController.getOneArticle(id:Integer)
 PUT     /api/articles/:id                   controllers.ArticleController.updateOneArticle(id:Integer)
 
 
 GET     /api/accounts                       controllers.AccountController.getAllAccounts
-GET     /api/account/:id                    controllers.AccountController.getOneAccount(id:Integer)
+POST    /api/accounts                       controllers.AccountController.insertAccount
+GET     /api/accounts/admin                 controllers.AccountController.getAdminAccounts
+GET     /api/accounts/normal                controllers.AccountController.getNormalAccounts
+
+GET     /api/accounts/:id                    controllers.AccountController.getOneAccount(id:Integer)
+DELETE  /api/accounts/:id                    controllers.AccountController.deleteAccount(id:Integer)
 
 
 
