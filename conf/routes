@@ -8,16 +8,9 @@ GET     /                                   controllers.HomeController.index
 GET     /api/articles                       controllers.ArticleController.getAllArticles
 POST    /api/articles                       controllers.ArticleController.insertArticle
 GET     /api/articles/recent                controllers.ArticleController.getRecentArticles
-
 GET     /api/articles/books                 controllers.BookController.getAllBooks
-
-
 GET     /api/articles/electronics           controllers.ElectronicController.getAllElectronics
-
-
 GET     /api/articles/officesupplies        controllers.OfficeSupplyController.getAllOfficeSupplies
-
-
 GET     /api/articles/other                 controllers.OtherArticleController.getAllOtherArticles
 
 
@@ -26,7 +19,7 @@ PUT     /api/articles/:id                   controllers.ArticleController.update
 
 
 GET     /api/accounts                       controllers.AccountController.getAllAccounts
-
+GET     /api/account/:id                    controllers.AccountController.getOneAccount(id:Integer)
 
 
 

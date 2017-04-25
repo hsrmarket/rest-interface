@@ -56,4 +56,34 @@ public class AccountController extends Controller {
     }
 
 
+    public Result getOneAccount(Integer id){
+        try {
+            connection = db.getConnection();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM accounts INNER JOIN address ON accounts.address_id = address.address_id WHERE account_id ='"+id+"'").executeQuery();
+
+            if(resultSet.next()){
+                Address address = new Address(resultSet.getString("streetname"),resultSet.getString("streetnumber"),resultSet.getInt("zip"),resultSet.getString("city"));
+                address.setId(resultSet.getInt("address_id"));
+                Account account = new Account(resultSet.getInt("studentid"),resultSet.getString("firstname"),resultSet.getString("lastname"),address,resultSet.getString("email"),resultSet.getString("tel"),resultSet.getString("pw"),resultSet.getBoolean("isadmin"));
+                account.setId(resultSet.getInt("account_id"));
+
+                return ok(Json.toJson(account));
+            }
+
+            return badRequest(Json.toJson(new DefaultErrorMessage(14,"No Account with given ID found")));
+
+        } catch (SQLException e) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
+        }
+
+    }
+
+
 }
