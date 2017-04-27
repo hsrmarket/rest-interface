@@ -32,54 +32,52 @@ public class OfficeSupplyController extends Controller {
 
         OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
         //Properties checker
-        return insertOfficeSupply(officeSupply);
-    }
-
-
-    public Result insertOfficeSupply(OfficeSupply officeSupply){
-
         try {
-            connection = db.getConnection();
-            PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-
-            articleStatement.setString(1,officeSupply.getName());
-            articleStatement.setString(2,officeSupply.getDescription());
-            articleStatement.setInt(3,officeSupply.getCondition());
-            articleStatement.setInt(4,officeSupply.getPrice());
-            articleStatement.setDate(5,officeSupply.getCreationDate());
-            articleStatement.setString(6,officeSupply.getImage());
-
-            int affectedRows = articleStatement.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Creating office supply failed, no rows affected.");
-            }
-
-
-            ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
-            PreparedStatement officeSupplyStatement = connection.prepareStatement("INSERT INTO officesupplies (officesupplie_id) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
-
-            if (articleGeneratedKeys.next()) {
-                officeSupplyStatement.setInt(1,articleGeneratedKeys.getInt(1));
-                officeSupplyStatement.executeUpdate();
-
-                officeSupply.setId(articleGeneratedKeys.getInt(1));
-
-            }
-            else {
-                throw new SQLException("Creating office supply failed, no ID obtained.");
-            }
-
-        }catch (SQLException e){
+            return ok(Json.toJson(insertOfficeSupply(officeSupply)));
+        } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
         }
-        return ok(Json.toJson(officeSupply));
+    }
+
+
+    public OfficeSupply insertOfficeSupply(OfficeSupply officeSupply) throws SQLException{
+
+        connection = db.getConnection();
+        PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+
+        articleStatement.setString(1,officeSupply.getName());
+        articleStatement.setString(2,officeSupply.getDescription());
+        articleStatement.setInt(3,officeSupply.getCondition());
+        articleStatement.setInt(4,officeSupply.getPrice());
+        articleStatement.setDate(5,officeSupply.getCreationDate());
+        articleStatement.setString(6,officeSupply.getImage());
+
+        int affectedRows = articleStatement.executeUpdate();
+
+        if (affectedRows == 0) {
+            throw new SQLException("Creating office supply failed, no rows affected.");
+        }
+
+        ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+        PreparedStatement officeSupplyStatement = connection.prepareStatement("INSERT INTO officesupplies (officesupplie_id) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+
+        if (articleGeneratedKeys.next()) {
+            officeSupplyStatement.setInt(1,articleGeneratedKeys.getInt(1));
+            officeSupplyStatement.executeUpdate();
+
+            officeSupply.setId(articleGeneratedKeys.getInt(1));
+
+        } else {
+            throw new SQLException("Creating office supply failed, no ID obtained.");
+        }
+
+        return officeSupply;
     }
 
 
@@ -97,43 +95,41 @@ public class OfficeSupplyController extends Controller {
         OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
         //Properties checker
         officeSupply.setId(json.findPath("id").intValue());
-        return updateOneOfficeSupply(officeSupply);
-    }
-
-
-    public Result updateOneOfficeSupply(OfficeSupply officeSupply){
 
         try {
-            connection = db.getConnection();
-            PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
-
-            articleStatement.setString(1,officeSupply.getName());
-            articleStatement.setString(2,officeSupply.getDescription());
-            articleStatement.setInt(3,officeSupply.getCondition());
-            articleStatement.setInt(4,officeSupply.getPrice());
-            articleStatement.setDate(5,officeSupply.getCreationDate());
-            articleStatement.setString(6,officeSupply.getImage());
-            articleStatement.setInt(7,officeSupply.getId());
-
-            int affectedRows = articleStatement.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Updating office supply failed, no rows affected.");
-            }
-
-
-        }catch (SQLException e){
+            return ok(Json.toJson(updateOneOfficeSupply(officeSupply)));
+        } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
         }
+    }
 
-        return ok(Json.toJson(officeSupply));
 
+    public OfficeSupply updateOneOfficeSupply(OfficeSupply officeSupply) throws SQLException{
+
+        connection = db.getConnection();
+        PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
+
+        articleStatement.setString(1,officeSupply.getName());
+        articleStatement.setString(2,officeSupply.getDescription());
+        articleStatement.setInt(3,officeSupply.getCondition());
+        articleStatement.setInt(4,officeSupply.getPrice());
+        articleStatement.setDate(5,officeSupply.getCreationDate());
+        articleStatement.setString(6,officeSupply.getImage());
+        articleStatement.setInt(7,officeSupply.getId());
+
+        int affectedRows = articleStatement.executeUpdate();
+
+        if (affectedRows == 0) {
+            throw new SQLException("Updating office supply failed, no rows affected.");
+        }
+
+        return officeSupply;
     }
 
 

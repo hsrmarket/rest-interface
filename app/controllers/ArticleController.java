@@ -49,10 +49,8 @@ public class ArticleController extends Controller {
                     return ec.insertElectronic();
 
                 case "office supply":
-                    OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
-                    //Properties checker
                     OfficeSupplyController osc = new OfficeSupplyController(db);
-                    return osc.insertOfficeSupply(officeSupply);
+                    return osc.insertOfficeSupply();
 
                 case "other":
                     OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
@@ -148,11 +146,8 @@ public class ArticleController extends Controller {
                 return ec.updateOneElectronic(id);
 
             case "office supply":
-                OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
-                officeSupply.setId(json.findPath("id").intValue());
-                //Properties checker
                 OfficeSupplyController osc = new OfficeSupplyController(db);
-                return osc.updateOneOfficeSupply(officeSupply);
+                return osc.updateOneOfficeSupply(id);
 
             case "other":
                 OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
