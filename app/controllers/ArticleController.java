@@ -216,15 +216,20 @@ public class ArticleController extends Controller {
 
 
         if(bookResultSet.next()){
+        	connection.close();
             return "books";
         }else if(electronicResultSet.next()){
+        	connection.close();
             return "electronics";
         }else if(officeSupplyResultSet.next()){
+        	connection.close();
             return "officeSupplies";
         }else if(otherArticleResultSet.next()){
+        	connection.close();
             return "otherarticles";
         }
 
+		connection.close();
         return "none";
     }
 
