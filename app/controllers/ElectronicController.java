@@ -21,6 +21,7 @@ public class ElectronicController extends Controller{
         this.db = db;
     }
 
+
     public Result insertElectronic(){
         JsonNode json = request().body().asJson();
 
@@ -30,56 +31,56 @@ public class ElectronicController extends Controller{
 
         Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"electronic",json.findPath("producer").textValue(),json.findPath("model").textValue());
         //Properties checker
-        return insertElectronic(electronic);
-    }
 
-
-    public Result insertElectronic(Electronic electronic){
         try {
-            connection = db.getConnection();
-            PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-
-            articleStatement.setString(1,electronic.getName());
-            articleStatement.setString(2,electronic.getDescription());
-            articleStatement.setInt(3,electronic.getCondition());
-            articleStatement.setInt(4,electronic.getPrice());
-            articleStatement.setDate(5,electronic.getCreationDate());
-            articleStatement.setString(6,electronic.getImage());
-
-            int affectedRows = articleStatement.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Creating electronic failed, no rows affected.");
-            }
-
-
-            ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
-            PreparedStatement electronicStatement = connection.prepareStatement("INSERT INTO electronics (electronic_id, manufacturer, modell) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
-
-            if (articleGeneratedKeys.next()) {
-                electronicStatement.setInt(1,articleGeneratedKeys.getInt(1));
-                electronicStatement.setString(2,electronic.getProducer());
-                electronicStatement.setString(3,electronic.getModel());
-                electronicStatement.executeUpdate();
-
-                electronic.setId(articleGeneratedKeys.getInt(1));
-
-            }
-            else {
-                throw new SQLException("Creating electronic failed, no ID obtained.");
-            }
-
-        }catch (SQLException e){
+            return ok(Json.toJson(insertElectronic(electronic)));
+        } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
         }
+    }
 
-        return ok(Json.toJson(electronic));
+
+    public Electronic insertElectronic(Electronic electronic) throws SQLException{
+
+        connection = db.getConnection();
+        PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+
+        articleStatement.setString(1,electronic.getName());
+        articleStatement.setString(2,electronic.getDescription());
+        articleStatement.setInt(3,electronic.getCondition());
+        articleStatement.setInt(4,electronic.getPrice());
+        articleStatement.setDate(5,electronic.getCreationDate());
+        articleStatement.setString(6,electronic.getImage());
+
+        int affectedRows = articleStatement.executeUpdate();
+
+        if (affectedRows == 0) {
+            throw new SQLException("Creating electronic failed, no rows affected.");
+        }
+
+
+        ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+        PreparedStatement electronicStatement = connection.prepareStatement("INSERT INTO electronics (electronic_id, manufacturer, modell) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
+
+        if (articleGeneratedKeys.next()) {
+            electronicStatement.setInt(1,articleGeneratedKeys.getInt(1));
+            electronicStatement.setString(2,electronic.getProducer());
+            electronicStatement.setString(3,electronic.getModel());
+            electronicStatement.executeUpdate();
+
+            electronic.setId(articleGeneratedKeys.getInt(1));
+
+        } else {
+            throw new SQLException("Creating electronic failed, no ID obtained.");
+        }
+
+        return electronic;
     }
 
 
