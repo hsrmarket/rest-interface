@@ -34,6 +34,7 @@
     # An example controller showing a sample home page
     GET     /                                   controllers.HomeController.index
 
+    # All calls for articles
     GET     /api/articles                       controllers.ArticleController.getAllArticles
     POST    /api/articles                       controllers.ArticleController.insertArticle
     GET     /api/articles/recent                controllers.ArticleController.getRecentArticles
@@ -45,7 +46,7 @@
     GET     /api/articles/:id                   controllers.ArticleController.getOneArticle(id:Integer)
     PUT     /api/articles/:id                   controllers.ArticleController.updateOneArticle(id:Integer)
 
-
+    # All calls for accounts
     GET     /api/accounts                       controllers.AccountController.getAllAccounts
     POST    /api/accounts                       controllers.AccountController.insertAccount
     GET     /api/accounts/admin                 controllers.AccountController.getAdminAccounts
@@ -53,6 +54,14 @@
 
     GET     /api/accounts/:id                   controllers.AccountController.getOneAccount(id:Integer)
     DELETE  /api/accounts/:id                   controllers.AccountController.deleteAccount(id:Integer)
+
+    # All calls for purchases
+    GET     /api/purchases                      controllers.PurchaseController.getAllPurchases
+    POST    /api/purchases                      controllers.PurchaseController.insertPurchase
+
+    GET     /api/purchases/:id                  controllers.PurchaseController.getOnePurchase(id:Integer)
+    DELETE  /api/purchases/:id                  controllers.PurchaseController.deletePurchase(id:Integer)
+
 
     # Map static resources from the /public folder to the /assets URL path
     # Needed for files in the public folder like js or stylesheets etc.
@@ -138,7 +147,20 @@
     private Integer zip;
     private String city;
 
-    //constructor, Getters and Setters
+    //Constructor, Getters and Setters
+
+}</code></pre>
+
+            <h3>Purchase</h3>
+            <pre><code>public class Purchase {
+
+    private Integer id;
+    private Integer articleId;
+    private Integer buyerId;
+    private Boolean isCompleted;
+    private Date purchaseDate;
+
+    //Constructor, Getters and Setters
 
 }</code></pre>
 
