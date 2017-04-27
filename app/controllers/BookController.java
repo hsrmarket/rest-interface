@@ -32,57 +32,57 @@ public class BookController extends Controller {
 
         Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
         //Properties checker
-        return insertBook(book);
-    }
-
-
-    public Result insertBook(Book book){
 
         try {
-            connection = db.getConnection();
-            PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-
-            articleStatement.setString(1,book.getName());
-            articleStatement.setString(2,book.getDescription());
-            articleStatement.setInt(3,book.getCondition());
-            articleStatement.setInt(4,book.getPrice());
-            articleStatement.setDate(5,book.getCreationDate());
-            articleStatement.setString(6,book.getImage());
-
-            int affectedRows = articleStatement.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Creating book failed, no rows affected.");
-            }
-
-
-            ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
-            PreparedStatement bookStatement = connection.prepareStatement("INSERT INTO books (book_id, author, publisher, isbn) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-
-            if (articleGeneratedKeys.next()) {
-                bookStatement.setInt(1,articleGeneratedKeys.getInt(1));
-                bookStatement.setString(2,book.getAuthor());
-                bookStatement.setString(3,book.getPublisher());
-                bookStatement.setString(4,book.getIsbn());
-                bookStatement.executeUpdate();
-
-                book.setId(articleGeneratedKeys.getInt(1));
-
-            }
-            else {
-                throw new SQLException("Creating book failed, no ID obtained.");
-            }
-
-        }catch (SQLException e){
+            return ok(Json.toJson(insertBook(book)));
+        } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
         }
-        return ok(Json.toJson(book));
+    }
+
+
+    public Book insertBook(Book book) throws SQLException{
+
+        connection = db.getConnection();
+        PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+
+        articleStatement.setString(1,book.getName());
+        articleStatement.setString(2,book.getDescription());
+        articleStatement.setInt(3,book.getCondition());
+        articleStatement.setInt(4,book.getPrice());
+        articleStatement.setDate(5,book.getCreationDate());
+        articleStatement.setString(6,book.getImage());
+
+        int affectedRows = articleStatement.executeUpdate();
+
+        if (affectedRows == 0) {
+            throw new SQLException("Creating book failed, no rows affected.");
+        }
+
+
+        ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+        PreparedStatement bookStatement = connection.prepareStatement("INSERT INTO books (book_id, author, publisher, isbn) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+
+        if (articleGeneratedKeys.next()) {
+            bookStatement.setInt(1,articleGeneratedKeys.getInt(1));
+            bookStatement.setString(2,book.getAuthor());
+            bookStatement.setString(3,book.getPublisher());
+            bookStatement.setString(4,book.getIsbn());
+            bookStatement.executeUpdate();
+
+            book.setId(articleGeneratedKeys.getInt(1));
+
+        } else {
+            throw new SQLException("Creating book failed, no ID obtained.");
+        }
+
+        return book;
     }
 
 

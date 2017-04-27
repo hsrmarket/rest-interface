@@ -41,13 +41,10 @@ public class ArticleController extends Controller {
             switch (type) {
 
                 case "book":
-                    Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
-                    //Properties checker
                     BookController bc = new BookController(db);
-                    return bc.insertBook(book);
+                    return bc.insertBook();
 
                 case "electronic":
-                    //Properties checker
                     ElectronicController ec = new ElectronicController(db);
                     return ec.insertElectronic();
 
