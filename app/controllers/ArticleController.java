@@ -53,10 +53,8 @@ public class ArticleController extends Controller {
                     return osc.insertOfficeSupply();
 
                 case "other":
-                    OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
-                    //Properties checker
                     OtherArticleController oac = new OtherArticleController(db);
-                    return oac.insertOtherArticle(otherArticle);
+                    return oac.insertOtherArticle();
 
                 default:
                     return badRequest(Json.toJson(new DefaultErrorMessage(13,"No matching type object")));
@@ -150,11 +148,8 @@ public class ArticleController extends Controller {
                 return osc.updateOneOfficeSupply(id);
 
             case "other":
-                OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
-                otherArticle.setId(json.findPath("id").intValue());
-                //Properties checker
                 OtherArticleController oac = new OtherArticleController(db);
-                return oac.updateOneOtherArticle(otherArticle);
+                return oac.updateOneOtherArticle(id);
 
             default:
                 return badRequest(Json.toJson(new DefaultErrorMessage(13,"No matching type object")));
