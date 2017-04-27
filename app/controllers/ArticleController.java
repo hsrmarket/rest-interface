@@ -150,11 +150,9 @@ public class ArticleController extends Controller {
                 return bc.updateOneBook(book);
 
             case "electronic":
-                Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"electronic",json.findPath("producer").textValue(),json.findPath("model").textValue());
-                electronic.setId(json.findPath("id").intValue());
                 //Properties checker
                 ElectronicController ec = new ElectronicController(db);
-                return ec.updateOneElectronic(electronic);
+                return ec.updateOneElectronic(id);
 
             case "office supply":
                 OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
