@@ -100,57 +100,56 @@ public class BookController extends Controller {
         Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
         //Properties checker
         book.setId(json.findPath("id").intValue());
-        return updateOneBook(book);
-    }
-
-
-    public Result updateOneBook(Book book){
 
         try {
-            connection = db.getConnection();
-            PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
-
-            articleStatement.setString(1,book.getName());
-            articleStatement.setString(2,book.getDescription());
-            articleStatement.setInt(3,book.getCondition());
-            articleStatement.setInt(4,book.getPrice());
-            articleStatement.setDate(5,book.getCreationDate());
-            articleStatement.setString(6,book.getImage());
-            articleStatement.setInt(7,book.getId());
-
-            int affectedRows = articleStatement.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Updating book failed, no rows affected.");
-            }
-
-
-            ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
-            PreparedStatement bookStatement = connection.prepareStatement("UPDATE books SET author = ?, publisher = ?, isbn = ? WHERE book_id = ?", Statement.RETURN_GENERATED_KEYS);
-
-            if (articleGeneratedKeys.next()) {
-                bookStatement.setString(1,book.getAuthor());
-                bookStatement.setString(2,book.getPublisher());
-                bookStatement.setString(3,book.getIsbn());
-                bookStatement.setInt(4,book.getId());
-                bookStatement.executeUpdate();
-
-            } else {
-                throw new SQLException("Updating book failed, no ID obtained.");
-            }
-
-        }catch (SQLException e){
+            return ok(Json.toJson(updateOneBook(book)));
+        } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
         }
+    }
 
-        return ok(Json.toJson(book));
 
+    public Book updateOneBook(Book book) throws SQLException{
+
+        connection = db.getConnection();
+        PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
+
+        articleStatement.setString(1,book.getName());
+        articleStatement.setString(2,book.getDescription());
+        articleStatement.setInt(3,book.getCondition());
+        articleStatement.setInt(4,book.getPrice());
+        articleStatement.setDate(5,book.getCreationDate());
+        articleStatement.setString(6,book.getImage());
+        articleStatement.setInt(7,book.getId());
+
+        int affectedRows = articleStatement.executeUpdate();
+
+        if (affectedRows == 0) {
+            throw new SQLException("Updating book failed, no rows affected.");
+        }
+
+
+        ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+        PreparedStatement bookStatement = connection.prepareStatement("UPDATE books SET author = ?, publisher = ?, isbn = ? WHERE book_id = ?", Statement.RETURN_GENERATED_KEYS);
+
+        if (articleGeneratedKeys.next()) {
+            bookStatement.setString(1,book.getAuthor());
+            bookStatement.setString(2,book.getPublisher());
+            bookStatement.setString(3,book.getIsbn());
+            bookStatement.setInt(4,book.getId());
+            bookStatement.executeUpdate();
+
+        } else {
+            throw new SQLException("Updating book failed, no ID obtained.");
+        }
+
+        return book;
     }
 
 

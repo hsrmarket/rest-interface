@@ -140,14 +140,10 @@ public class ArticleController extends Controller {
         switch (json.findPath("type").textValue()){
 
             case "book":
-                Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
-                book.setId(json.findPath("id").intValue());
-                //Properties checker
                 BookController bc = new BookController(db);
-                return bc.updateOneBook(book);
+                return bc.updateOneBook(id);
 
             case "electronic":
-                //Properties checker
                 ElectronicController ec = new ElectronicController(db);
                 return ec.updateOneElectronic(id);
 
