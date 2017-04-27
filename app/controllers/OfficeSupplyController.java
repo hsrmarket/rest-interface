@@ -46,7 +46,7 @@ public class OfficeSupplyController extends Controller {
     }
 
 
-    public OfficeSupply insertOfficeSupply(OfficeSupply officeSupply) throws SQLException{
+    private OfficeSupply insertOfficeSupply(OfficeSupply officeSupply) throws SQLException{
 
         connection = db.getConnection();
         PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -110,7 +110,7 @@ public class OfficeSupplyController extends Controller {
     }
 
 
-    public OfficeSupply updateOneOfficeSupply(OfficeSupply officeSupply) throws SQLException{
+    private OfficeSupply updateOneOfficeSupply(OfficeSupply officeSupply) throws SQLException{
 
         connection = db.getConnection();
         PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);

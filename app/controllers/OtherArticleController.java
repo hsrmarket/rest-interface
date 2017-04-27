@@ -46,7 +46,7 @@ public class OtherArticleController extends Controller {
     }
 
 
-    public OtherArticle insertOtherArticle(OtherArticle otherArticle) throws SQLException{
+    private OtherArticle insertOtherArticle(OtherArticle otherArticle) throws SQLException{
 
         connection = db.getConnection();
         PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -110,7 +110,7 @@ public class OtherArticleController extends Controller {
     }
 
 
-    public OtherArticle updateOneOtherArticle(OtherArticle otherArticle) throws SQLException{
+    private OtherArticle updateOneOtherArticle(OtherArticle otherArticle) throws SQLException{
 
         connection = db.getConnection();
         PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);

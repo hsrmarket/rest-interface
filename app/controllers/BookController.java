@@ -47,7 +47,7 @@ public class BookController extends Controller {
     }
 
 
-    public Book insertBook(Book book) throws SQLException{
+    private Book insertBook(Book book) throws SQLException{
 
         connection = db.getConnection();
         PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -115,7 +115,7 @@ public class BookController extends Controller {
     }
 
 
-    public Book updateOneBook(Book book) throws SQLException{
+    private Book updateOneBook(Book book) throws SQLException{
 
         connection = db.getConnection();
         PreparedStatement articleStatement = connection.prepareStatement("UPDATE articles SET name = ?, description = ?, condition = ?, price = ?, creationdate = ?, image = ? WHERE article_id = ?", Statement.RETURN_GENERATED_KEYS);
