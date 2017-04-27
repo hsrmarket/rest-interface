@@ -36,62 +36,62 @@ public class AccountController extends Controller {
         Address address = new Address(json.findPath("street").textValue(),json.findPath("streetNr").textValue(),json.findPath("zip").asInt(),json.findPath("city").textValue());
         Account account = new Account(json.findPath("studentId").asInt(),json.findPath("firstname").textValue(),json.findPath("lastname").textValue(),address,json.findPath("email").textValue(),json.findPath("telephone").textValue(),json.findPath("password").textValue(),json.findPath("admin").asBoolean());
         //Properties checker
-        return insertAccount(account);
-    }
-
-
-    private Result insertAccount(Account account){
         try {
-            connection = db.getConnection();
-            PreparedStatement addressStatement = connection.prepareStatement("INSERT INTO address (streetname, streetnumber, zip, city) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-
-            addressStatement.setString(1,account.getAddress().getStreet());
-            addressStatement.setString(2,account.getAddress().getStreetNr());
-            addressStatement.setInt(3,account.getAddress().getZip());
-            addressStatement.setString(4,account.getAddress().getCity());
-
-            int affectedRows = addressStatement.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Creating address failed, no rows affected.");
-            }
-
-            ResultSet addressGeneratedKeys = addressStatement.getGeneratedKeys();
-            PreparedStatement accountStatement = connection.prepareStatement("INSERT INTO accounts (address_id, firstname, lastname, studentid, email, tel, pw, isadmin) VALUES (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-
-            if (addressGeneratedKeys.next()) {
-                accountStatement.setInt(1,addressGeneratedKeys.getInt(1));
-                accountStatement.setString(2,account.getFirstname());
-                accountStatement.setString(3,account.getLastname());
-                accountStatement.setInt(4,account.getStudentId());
-                accountStatement.setString(5,account.getEmail());
-                accountStatement.setString(6,account.getTelephone());
-                accountStatement.setString(7,account.getPassword());
-                accountStatement.setBoolean(8,account.isAdmin());
-
-                accountStatement.executeUpdate();
-
-                ResultSet accountGeneratedKeys = accountStatement.getGeneratedKeys();
-
-                accountGeneratedKeys.next();
-                account.setId(accountGeneratedKeys.getInt(1));
-                account.getAddress().setId(addressGeneratedKeys.getInt(1));
-
-            }
-            else {
-                throw new SQLException("Creating account failed, no ID obtained.");
-            }
-
-        }catch (SQLException e){
+            return ok(Json.toJson(insertAccount(account)));
+        } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
         }
-        return ok(Json.toJson(account));
+    }
+
+
+    private Account insertAccount(Account account) throws SQLException {
+
+        connection = db.getConnection();
+        PreparedStatement addressStatement = connection.prepareStatement("INSERT INTO address (streetname, streetnumber, zip, city) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+
+        addressStatement.setString(1,account.getAddress().getStreet());
+        addressStatement.setString(2,account.getAddress().getStreetNr());
+        addressStatement.setInt(3,account.getAddress().getZip());
+        addressStatement.setString(4,account.getAddress().getCity());
+
+        int affectedRows = addressStatement.executeUpdate();
+
+        if (affectedRows == 0) {
+            throw new SQLException("Creating address failed, no rows affected.");
+        }
+
+        ResultSet addressGeneratedKeys = addressStatement.getGeneratedKeys();
+        PreparedStatement accountStatement = connection.prepareStatement("INSERT INTO accounts (address_id, firstname, lastname, studentid, email, tel, pw, isadmin) VALUES (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+
+        if (addressGeneratedKeys.next()) {
+            accountStatement.setInt(1,addressGeneratedKeys.getInt(1));
+            accountStatement.setString(2,account.getFirstname());
+            accountStatement.setString(3,account.getLastname());
+            accountStatement.setInt(4,account.getStudentId());
+            accountStatement.setString(5,account.getEmail());
+            accountStatement.setString(6,account.getTelephone());
+            accountStatement.setString(7,account.getPassword());
+            accountStatement.setBoolean(8,account.isAdmin());
+
+            accountStatement.executeUpdate();
+
+            ResultSet accountGeneratedKeys = accountStatement.getGeneratedKeys();
+
+            accountGeneratedKeys.next();
+            account.setId(accountGeneratedKeys.getInt(1));
+            account.getAddress().setId(addressGeneratedKeys.getInt(1));
+
+        } else {
+            throw new SQLException("Creating account failed, no ID obtained.");
+        }
+
+        return account;
     }
 
 
@@ -113,57 +113,57 @@ public class AccountController extends Controller {
         address.setId(json.get("address").findPath("id").asInt());
         account.setId(json.findPath("id").asInt());
 
-        return updateOneAccount(account);
-    }
-
-
-    private Result updateOneAccount(Account account){
         try {
-            connection = db.getConnection();
-            PreparedStatement addressStatement = connection.prepareStatement("UPDATE address SET streetname = ?, streetnumber = ?, zip = ?, city = ? WHERE address_id = ?", Statement.RETURN_GENERATED_KEYS);
-
-            addressStatement.setString(1,account.getAddress().getStreet());
-            addressStatement.setString(2,account.getAddress().getStreetNr());
-            addressStatement.setInt(3,account.getAddress().getZip());
-            addressStatement.setString(4,account.getAddress().getCity());
-            addressStatement.setInt(5,account.getAddress().getId());
-
-            int affectedRows = addressStatement.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Updating address failed, no rows affected.");
-            }
-
-            ResultSet addressGeneratedKeys = addressStatement.getGeneratedKeys();
-            PreparedStatement accountStatement = connection.prepareStatement("UPDATE accounts SET firstname = ?, lastname = ?, studentid = ?, email = ?, tel = ?, pw = ?, isadmin = ? WHERE account_id = ?", Statement.RETURN_GENERATED_KEYS);
-
-            if (addressGeneratedKeys.next()) {
-                accountStatement.setString(1,account.getFirstname());
-                accountStatement.setString(2,account.getLastname());
-                accountStatement.setInt(3,account.getStudentId());
-                accountStatement.setString(4,account.getEmail());
-                accountStatement.setString(5,account.getTelephone());
-                accountStatement.setString(6,account.getPassword());
-                accountStatement.setBoolean(7,account.isAdmin());
-                accountStatement.setInt(8,account.getId());
-
-                accountStatement.executeUpdate();
-
-            }
-            else {
-                throw new SQLException("Updating account failed, no ID obtained.");
-            }
-
-        }catch (SQLException e){
+            return ok(Json.toJson(updateOneAccount(account)));
+        } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
         }
-        return ok(Json.toJson(account));
+    }
+
+
+    private Account updateOneAccount(Account account) throws SQLException{
+
+        connection = db.getConnection();
+        PreparedStatement addressStatement = connection.prepareStatement("UPDATE address SET streetname = ?, streetnumber = ?, zip = ?, city = ? WHERE address_id = ?", Statement.RETURN_GENERATED_KEYS);
+
+        addressStatement.setString(1,account.getAddress().getStreet());
+        addressStatement.setString(2,account.getAddress().getStreetNr());
+        addressStatement.setInt(3,account.getAddress().getZip());
+        addressStatement.setString(4,account.getAddress().getCity());
+        addressStatement.setInt(5,account.getAddress().getId());
+
+        int affectedRows = addressStatement.executeUpdate();
+
+        if (affectedRows == 0) {
+            throw new SQLException("Updating address failed, no rows affected.");
+        }
+
+        ResultSet addressGeneratedKeys = addressStatement.getGeneratedKeys();
+        PreparedStatement accountStatement = connection.prepareStatement("UPDATE accounts SET firstname = ?, lastname = ?, studentid = ?, email = ?, tel = ?, pw = ?, isadmin = ? WHERE account_id = ?", Statement.RETURN_GENERATED_KEYS);
+
+        if (addressGeneratedKeys.next()) {
+            accountStatement.setString(1,account.getFirstname());
+            accountStatement.setString(2,account.getLastname());
+            accountStatement.setInt(3,account.getStudentId());
+            accountStatement.setString(4,account.getEmail());
+            accountStatement.setString(5,account.getTelephone());
+            accountStatement.setString(6,account.getPassword());
+            accountStatement.setBoolean(7,account.isAdmin());
+            accountStatement.setInt(8,account.getId());
+
+            accountStatement.executeUpdate();
+
+        } else {
+            throw new SQLException("Updating account failed, no ID obtained.");
+        }
+
+        return account;
     }
 
 
@@ -318,7 +318,5 @@ public class AccountController extends Controller {
         }
 
     }
-
-
 
 }
