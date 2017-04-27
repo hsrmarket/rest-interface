@@ -5,6 +5,7 @@
 # An example controller showing a sample home page
 GET     /                                   controllers.HomeController.index
 
+# All calls for articles
 GET     /api/articles                       controllers.ArticleController.getAllArticles
 POST    /api/articles                       controllers.ArticleController.insertArticle
 GET     /api/articles/recent                controllers.ArticleController.getRecentArticles
@@ -16,7 +17,7 @@ GET     /api/articles/other                 controllers.OtherArticleController.g
 GET     /api/articles/:id                   controllers.ArticleController.getOneArticle(id:Integer)
 PUT     /api/articles/:id                   controllers.ArticleController.updateOneArticle(id:Integer)
 
-
+# All calls for accounts
 GET     /api/accounts                       controllers.AccountController.getAllAccounts
 POST    /api/accounts                       controllers.AccountController.insertAccount
 GET     /api/accounts/admin                 controllers.AccountController.getAdminAccounts
@@ -24,6 +25,13 @@ GET     /api/accounts/normal                controllers.AccountController.getNor
 
 GET     /api/accounts/:id                   controllers.AccountController.getOneAccount(id:Integer)
 DELETE  /api/accounts/:id                   controllers.AccountController.deleteAccount(id:Integer)
+
+# All calls for purchases
+GET     /api/purchases                      controllers.PurchaseController.getAllPurchases
+POST    /api/purchases                      controllers.PurchaseController.insertPurchase
+
+GET     /api/purchases/:id                  controllers.PurchaseController.getOnePurchase(id:Integer)
+DELETE  /api/purchases/:id                  controllers.PurchaseController.deletePurchase(id:Integer)
 
 
 # Map static resources from the /public folder to the /assets URL path
