@@ -30,7 +30,7 @@ public class PurchaseController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
         }
 
-        //set null because it's not relevant for purchase
+        //set null because it's not relevant for purchases
         Article article = new Article(null,null,null,null,null,null,null);
         article.setId(json.get("article").findPath("id").asInt());
         Account account = new Account(null,null,null,null,null,null,null,false);
@@ -52,7 +52,7 @@ public class PurchaseController extends Controller {
         }
     }
 
-    
+
     private Purchase insertPurchase(Purchase purchase) throws SQLException{
 
         connection = db.getConnection();
@@ -66,7 +66,7 @@ public class PurchaseController extends Controller {
         int affectedRows = purchaseStatement.executeUpdate();
 
         if (affectedRows == 0) {
-            throw new SQLException("Creating address failed, no rows affected.");
+            throw new SQLException("Creating purchase failed, no rows affected.");
         }
 
         ResultSet purchaseGeneratedKeys = purchaseStatement.getGeneratedKeys();
