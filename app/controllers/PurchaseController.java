@@ -103,9 +103,10 @@ public class PurchaseController extends Controller {
             connection = db.getConnection();
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase").executeQuery();
             ArrayList<Purchase> list = new ArrayList<>();
+            AccountController ac = new AccountController(db);
 
             while(resultSet.next()){
-                Purchase purchase = new Purchase(resultSet.getInt("article_id"),resultSet.getInt("buyer_id"),resultSet.getBoolean("iscompleted"),resultSet.getDate("purchasedate"));
+                Purchase purchase = new Purchase(resultSet.getInt("article_id"),ac.getOneRawAccount(resultSet.getInt("buyer_id")),resultSet.getBoolean("iscompleted"),resultSet.getDate("purchasedate"));
                 purchase.setId(resultSet.getInt("purchase_id"));
                 list.add(purchase);
             }

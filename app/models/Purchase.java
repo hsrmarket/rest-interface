@@ -6,14 +6,14 @@ import java.sql.Date;
 public class Purchase {
 
     private Integer id;
-    private Integer articleId;
-    private Integer buyerId;
+    private Article article;
+    private Account buyer;
     private Boolean isCompleted;
     private Date purchaseDate;
 
-    public Purchase(Integer articleId, Integer buyerId, Boolean isCompleted, Date purchaseDate) {
-        this.articleId = articleId;
-        this.buyerId = buyerId;
+    public Purchase(Article article, Account buyer, Boolean isCompleted, Date purchaseDate) {
+        this.article = article;
+        this.buyer = buyer;
         this.isCompleted = isCompleted;
         this.purchaseDate = purchaseDate;
     }
@@ -26,20 +26,20 @@ public class Purchase {
         this.id = id;
     }
 
-    public Integer getArticleId() {
-        return articleId;
+    public Article getArticle() {
+        return article;
     }
 
-    public void setArticleId(Integer articleId) {
-        this.articleId = articleId;
+    public void setArticle(Article article) {
+        this.article = article;
     }
 
-    public Integer getBuyerId() {
-        return buyerId;
+    public Account getBuyer() {
+        return buyer;
     }
 
-    public void setBuyerId(Integer buyerId) {
-        this.buyerId = buyerId;
+    public void setBuyer(Account buyer) {
+        this.buyer = buyer;
     }
 
     public Boolean getCompleted() {
