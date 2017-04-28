@@ -24,7 +24,7 @@ public class PurchaseController extends Controller {
         this.db = db;
     }
 
-
+    /*
     public Result insertPurchase(){
         JsonNode json = request().body().asJson();
 
@@ -32,12 +32,12 @@ public class PurchaseController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
         }
 
-        Purchase purchase = new Purchase(json.findPath("articleId").asInt(),json.findPath("buyerId").asInt(),json.findPath("completed").asBoolean(),Date.valueOf(json.findPath("purchaseDate").asText()));
+        Purchase purchase = new Purchase(json.get("article").findPath("articleId").asInt(),json.findPath("buyerId").asInt(),json.findPath("completed").asBoolean(),Date.valueOf(json.findPath("purchaseDate").asText()));
         //Properties checker
         return insertPurchase(purchase);
     }
-
-
+*/
+/*
     private Result insertPurchase(Purchase purchase){
         try {
 
@@ -71,7 +71,7 @@ public class PurchaseController extends Controller {
         return ok(Json.toJson(purchase));
     }
 
-
+*/
     public Result deletePurchase(Integer id){
         try {
             connection = db.getConnection();
@@ -103,10 +103,11 @@ public class PurchaseController extends Controller {
             connection = db.getConnection();
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase").executeQuery();
             ArrayList<Purchase> list = new ArrayList<>();
-            AccountController ac = new AccountController(db);
+            AccountController accountController = new AccountController(db);
+            ArticleController articleController = new ArticleController(db);
 
             while(resultSet.next()){
-                Purchase purchase = new Purchase(resultSet.getInt("article_id"),ac.getOneRawAccount(resultSet.getInt("buyer_id")),resultSet.getBoolean("iscompleted"),resultSet.getDate("purchasedate"));
+                Purchase purchase = new Purchase(articleController.getOneRawArticle(resultSet.getInt("article_id")),accountController.getOneRawAccount(resultSet.getInt("buyer_id")),resultSet.getBoolean("iscompleted"),resultSet.getDate("purchasedate"));
                 purchase.setId(resultSet.getInt("purchase_id"));
                 list.add(purchase);
             }
@@ -125,7 +126,7 @@ public class PurchaseController extends Controller {
         }
     }
 
-
+/*
     public Result getOnePurchase(Integer id){
         try {
             connection = db.getConnection();
@@ -150,5 +151,5 @@ public class PurchaseController extends Controller {
             }
         }
     }
-
+*/
 }
