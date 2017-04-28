@@ -257,7 +257,7 @@ public class AccountController extends Controller {
             return account;
         }
 
-        throw new SQLException();
+        throw new SQLException("No account with given ID found");
     }
 
 
