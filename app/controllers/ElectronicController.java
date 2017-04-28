@@ -179,23 +179,10 @@ public class ElectronicController extends Controller{
 
 
     public Result getOneElectronic(Integer id){
-
         try {
-            connection = db.getConnection();
-
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN electronics on articles.article_id = electronics.electronic_id WHERE article_id ="+id+"").executeQuery();
-
-            if(resultSet.next()){
-                Electronic electronic = new Electronic(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"electronic",resultSet.getString("manufacturer"),resultSet.getString("modell"));
-                electronic.setId(resultSet.getInt("article_id"));
-                return ok(Json.toJson(electronic));
-            }
-
-            return badRequest(Json.toJson(new DefaultErrorMessage(14,"No electronic with given ID found")));
-
+            return ok(Json.toJson(getOneRawElectronic(id)));
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-
         } finally {
             try {
                 connection.close();
@@ -205,5 +192,22 @@ public class ElectronicController extends Controller{
         }
     }
 
+
+    public Electronic getOneRawElectronic(Integer id) throws SQLException{
+
+        connection = db.getConnection();
+
+        ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN electronics on articles.article_id = electronics.electronic_id WHERE article_id ="+id+"").executeQuery();
+
+        if(resultSet.next()){
+            Electronic electronic = new Electronic(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"electronic",resultSet.getString("manufacturer"),resultSet.getString("modell"));
+            electronic.setId(resultSet.getInt("article_id"));
+            return electronic;
+        }
+
+        throw new SQLException("No electronic with given ID found");
+
+
+    }
 
 }

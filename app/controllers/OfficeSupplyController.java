@@ -163,23 +163,10 @@ public class OfficeSupplyController extends Controller {
 
 
     public Result getOneOfficeSupply(Integer id){
-
         try {
-            connection = db.getConnection();
-
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN officesupplies on articles.article_id = officesupplies.officesupplie_id WHERE article_id ="+id+"").executeQuery();
-
-            if(resultSet.next()){
-                OfficeSupply officeSupply = new OfficeSupply(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"office supply");
-                officeSupply.setId(resultSet.getInt("article_id"));
-                return ok(Json.toJson(officeSupply));
-            }
-
-            return badRequest(Json.toJson(new DefaultErrorMessage(14,"No office supply with given ID found")));
-
+            return ok(Json.toJson(getOneRawOfficeSupply(id)));
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-
         } finally {
             try {
                 connection.close();
@@ -187,5 +174,22 @@ public class OfficeSupplyController extends Controller {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
         }
+    }
+
+
+    public OfficeSupply getOneRawOfficeSupply(Integer id) throws SQLException{
+
+        connection = db.getConnection();
+
+        ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN officesupplies on articles.article_id = officesupplies.officesupplie_id WHERE article_id ="+id+"").executeQuery();
+
+        if(resultSet.next()){
+            OfficeSupply officeSupply = new OfficeSupply(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"office supply");
+            officeSupply.setId(resultSet.getInt("article_id"));
+            return officeSupply;
+        }
+
+        throw new SQLException("No office supply with given ID found");
+
     }
 }

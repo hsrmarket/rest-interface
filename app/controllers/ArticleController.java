@@ -93,34 +93,46 @@ public class ArticleController extends Controller {
 
 
     public Result getOneArticle(Integer id){
-
         try {
-            String table = inWhichTable(id);
-            switch (table){
-
-                case "books":
-                    BookController bc = new BookController(db);
-                    return bc.getOneBook(id);
-
-                case "electronics":
-                    ElectronicController ec = new ElectronicController(db);
-                    return ec.getOneElectronic(id);
-
-                case "officeSupplies":
-                    OfficeSupplyController osc = new OfficeSupplyController(db);
-                    return osc.getOneOfficeSupply(id);
-
-                case "otherarticles":
-                    OtherArticleController oac = new OtherArticleController(db);
-                    return oac.getOneOtherArticle(id);
-
-                default:
-                    return badRequest(Json.toJson(new DefaultErrorMessage(14,"No article with given ID found")));
-            }
-
-        }catch (SQLException e){
+            return ok(Json.toJson(getOneRawArticle(id)));
+        } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
+    }
+
+
+    public Article getOneRawArticle(Integer id) throws SQLException{
+
+        String table = inWhichTable(id);
+        switch (table){
+
+            case "books":
+                BookController bc = new BookController(db);
+                return bc.getOneRawBook(id);
+
+            case "electronics":
+                ElectronicController ec = new ElectronicController(db);
+                return ec.getOneRawElectronic(id);
+
+            case "officeSupplies":
+                OfficeSupplyController osc = new OfficeSupplyController(db);
+                return osc.getOneRawOfficeSupply(id);
+
+            case "otherarticles":
+                OtherArticleController oac = new OtherArticleController(db);
+                return oac.getOneRawOtherArticle(id);
+
+            default:
+                throw new SQLException("No article with given ID found");
+        }
+
+
     }
 
 
@@ -188,7 +200,7 @@ public class ArticleController extends Controller {
 
     private String inWhichTable(Integer id) throws SQLException{
 
-        Connection connection = db.getConnection();
+        connection = db.getConnection();
 
         ResultSet bookResultSet = connection.prepareStatement("SELECT * FROM books where book_id ="+id+"").executeQuery();
         ResultSet electronicResultSet = connection.prepareStatement("SELECT * FROM electronics where electronic_id ="+id+"").executeQuery();

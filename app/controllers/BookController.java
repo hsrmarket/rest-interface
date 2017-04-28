@@ -182,22 +182,10 @@ public class BookController extends Controller {
 
 
     public Result getOneBook(Integer id){
-
         try {
-            connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN books on articles.article_id = books.book_id WHERE article_id ="+id+"").executeQuery();
-
-            if(resultSet.next()){
-                Book book = new Book(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"book",resultSet.getString("isbn"),resultSet.getString("author"),resultSet.getString("publisher"));
-                book.setId(resultSet.getInt("article_id"));
-                return ok(Json.toJson(book));
-            }
-
-            return badRequest(Json.toJson(new DefaultErrorMessage(14,"No book with given ID found")));
-
+            return ok(Json.toJson(getOneRawBook(id)));
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-
         } finally {
             try {
                 connection.close();
@@ -205,6 +193,22 @@ public class BookController extends Controller {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
         }
+    }
+
+
+    public Book getOneRawBook(Integer id) throws SQLException{
+
+        connection = db.getConnection();
+        ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN books on articles.article_id = books.book_id WHERE article_id ="+id+"").executeQuery();
+
+        if(resultSet.next()){
+            Book book = new Book(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"book",resultSet.getString("isbn"),resultSet.getString("author"),resultSet.getString("publisher"));
+            book.setId(resultSet.getInt("article_id"));
+            return book;
+        }
+
+        throw new SQLException("No book with given ID found");
+
     }
 
 }

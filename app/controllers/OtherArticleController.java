@@ -163,22 +163,10 @@ public class OtherArticleController extends Controller {
 
 
     public Result getOneOtherArticle(Integer id){
-
         try {
-            connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN otherarticles on articles.article_id = otherarticles.otherarticle_id WHERE article_id ="+id+"").executeQuery();
-
-            if(resultSet.next()){
-                OtherArticle otherArticle = new OtherArticle(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"other");
-                otherArticle.setId(resultSet.getInt("article_id"));
-                return ok(Json.toJson(otherArticle));
-            }
-
-            return badRequest(Json.toJson(new DefaultErrorMessage(14,"No other article with given ID found")));
-
+            return ok(Json.toJson(getOneRawOtherArticle(id)));
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-
         } finally {
             try {
                 connection.close();
@@ -186,6 +174,21 @@ public class OtherArticleController extends Controller {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
         }
+    }
+
+
+    public OtherArticle getOneRawOtherArticle(Integer id) throws SQLException{
+
+        connection = db.getConnection();
+        ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN otherarticles on articles.article_id = otherarticles.otherarticle_id WHERE article_id ="+id+"").executeQuery();
+
+        if(resultSet.next()){
+            OtherArticle otherArticle = new OtherArticle(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"other");
+            otherArticle.setId(resultSet.getInt("article_id"));
+            return otherArticle;
+        }
+
+        throw new SQLException("No other article with given ID found");
 
     }
 
