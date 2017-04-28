@@ -2,9 +2,7 @@ package controllers;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import models.DefaultErrorMessage;
-import models.DefaultSuccessMessage;
-import models.Purchase;
+import models.*;
 import play.db.Database;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -24,7 +22,7 @@ public class PurchaseController extends Controller {
         this.db = db;
     }
 
-    /*
+
     public Result insertPurchase(){
         JsonNode json = request().body().asJson();
 
@@ -32,46 +30,53 @@ public class PurchaseController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
         }
 
-        Purchase purchase = new Purchase(json.get("article").findPath("articleId").asInt(),json.findPath("buyerId").asInt(),json.findPath("completed").asBoolean(),Date.valueOf(json.findPath("purchaseDate").asText()));
+        //set null because it's not relevant for purchase
+        Article article = new Article(null,null,null,null,null,null,null);
+        article.setId(json.get("article").findPath("id").asInt());
+        Account account = new Account(null,null,null,null,null,null,null,false);
+        account.setId(json.get("buyer").findPath("id").asInt());
+
+        Purchase purchase = new Purchase(article,account,json.findPath("completed").asBoolean(),Date.valueOf(json.findPath("purchaseDate").asText()));
         //Properties checker
-        return insertPurchase(purchase);
-    }
-*/
-/*
-    private Result insertPurchase(Purchase purchase){
+
         try {
-
-            connection = db.getConnection();
-            PreparedStatement purchaseStatement = connection.prepareStatement("INSERT INTO purchase (article_id, buyer_id, iscompleted, purchasedate) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-
-            purchaseStatement.setInt(1,purchase.getArticleId());
-            purchaseStatement.setInt(2,purchase.getBuyerId());
-            purchaseStatement.setBoolean(3,purchase.getCompleted());
-            purchaseStatement.setDate(4,purchase.getPurchaseDate());
-
-            int affectedRows = purchaseStatement.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Creating address failed, no rows affected.");
-            }
-
-            ResultSet purchaseGeneratedKeys = purchaseStatement.getGeneratedKeys();
-            purchaseGeneratedKeys.next();
-            purchase.setId(purchaseGeneratedKeys.getInt(1));
-
-        }catch (SQLException e){
+            return ok(Json.toJson(insertPurchase(purchase)));
+        } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-        }finally {
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
         }
-        return ok(Json.toJson(purchase));
     }
 
-*/
+    
+    private Purchase insertPurchase(Purchase purchase) throws SQLException{
+
+        connection = db.getConnection();
+        PreparedStatement purchaseStatement = connection.prepareStatement("INSERT INTO purchase (article_id, buyer_id, iscompleted, purchasedate) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+
+        purchaseStatement.setInt(1,purchase.getArticle().getId());
+        purchaseStatement.setInt(2,purchase.getBuyer().getId());
+        purchaseStatement.setBoolean(3,purchase.getCompleted());
+        purchaseStatement.setDate(4,purchase.getPurchaseDate());
+
+        int affectedRows = purchaseStatement.executeUpdate();
+
+        if (affectedRows == 0) {
+            throw new SQLException("Creating address failed, no rows affected.");
+        }
+
+        ResultSet purchaseGeneratedKeys = purchaseStatement.getGeneratedKeys();
+        purchaseGeneratedKeys.next();
+        purchase.setId(purchaseGeneratedKeys.getInt(1));
+
+        return purchase;
+    }
+
+
     public Result deletePurchase(Integer id){
         try {
             connection = db.getConnection();
