@@ -126,14 +126,16 @@ public class PurchaseController extends Controller {
         }
     }
 
-/*
+
     public Result getOnePurchase(Integer id){
         try {
             connection = db.getConnection();
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase WHERE purchase_id ='"+id+"'").executeQuery();
+            AccountController accountController = new AccountController(db);
+            ArticleController articleController = new ArticleController(db);
 
             if(resultSet.next()){
-                Purchase purchase = new Purchase(resultSet.getInt("article_id"),resultSet.getInt("buyer_id"),resultSet.getBoolean("iscompleted"),resultSet.getDate("purchasedate"));
+                Purchase purchase = new Purchase(articleController.getOneRawArticle(resultSet.getInt("article_id")),accountController.getOneRawAccount(resultSet.getInt("buyer_id")),resultSet.getBoolean("iscompleted"),resultSet.getDate("purchasedate"));
                 purchase.setId(resultSet.getInt("purchase_id"));
                 return ok(Json.toJson(purchase));
             }
@@ -151,5 +153,5 @@ public class PurchaseController extends Controller {
             }
         }
     }
-*/
+
 }
