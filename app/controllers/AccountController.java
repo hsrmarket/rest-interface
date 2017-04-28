@@ -254,9 +254,11 @@ public class AccountController extends Controller {
             Account account = new Account(resultSet.getInt("studentid"),resultSet.getString("firstname"),resultSet.getString("lastname"),address,resultSet.getString("email"),resultSet.getString("tel"),resultSet.getString("pw"),resultSet.getBoolean("isadmin"));
             account.setId(resultSet.getInt("account_id"));
 
+            connection.close();
             return account;
         }
 
+        connection.close();
         throw new SQLException("No account with given ID found");
     }
 

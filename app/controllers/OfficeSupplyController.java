@@ -186,9 +186,12 @@ public class OfficeSupplyController extends Controller {
         if(resultSet.next()){
             OfficeSupply officeSupply = new OfficeSupply(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"office supply");
             officeSupply.setId(resultSet.getInt("article_id"));
+
+            connection.close();
             return officeSupply;
         }
 
+        connection.close();
         throw new SQLException("No office supply with given ID found");
 
     }

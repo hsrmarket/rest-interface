@@ -202,9 +202,12 @@ public class ElectronicController extends Controller{
         if(resultSet.next()){
             Electronic electronic = new Electronic(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"electronic",resultSet.getString("manufacturer"),resultSet.getString("modell"));
             electronic.setId(resultSet.getInt("article_id"));
+
+            connection.close();
             return electronic;
         }
 
+        connection.close();
         throw new SQLException("No electronic with given ID found");
 
 

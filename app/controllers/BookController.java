@@ -204,9 +204,12 @@ public class BookController extends Controller {
         if(resultSet.next()){
             Book book = new Book(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"book",resultSet.getString("isbn"),resultSet.getString("author"),resultSet.getString("publisher"));
             book.setId(resultSet.getInt("article_id"));
+
+            connection.close();
             return book;
         }
 
+        connection.close();
         throw new SQLException("No book with given ID found");
 
     }

@@ -185,9 +185,12 @@ public class OtherArticleController extends Controller {
         if(resultSet.next()){
             OtherArticle otherArticle = new OtherArticle(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"other");
             otherArticle.setId(resultSet.getInt("article_id"));
+
+            connection.close();
             return otherArticle;
         }
 
+        connection.close();
         throw new SQLException("No other article with given ID found");
 
     }
