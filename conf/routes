@@ -36,6 +36,7 @@ DELETE  /api/purchases/:id                  controllers.PurchaseController.delet
 
 #All calls for user
 PUT     /api/user/:id                       controllers.AccountController.updateOneAccount(id:Integer)
+POST    /api/user/login                     controllers.AccountController.login
 
 # Map static resources from the /public folder to the /assets URL path
 # Needed for files in the public folder like js or stylesheets etc.

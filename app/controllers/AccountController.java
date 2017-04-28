@@ -324,4 +324,37 @@ public class AccountController extends Controller {
 
     }
 
+
+    public Result login(){
+        JsonNode json = request().body().asJson();
+
+        if(json == null) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
+        }
+
+        String email = json.findPath("email").textValue();
+        String password = json.findPath("password").textValue();
+
+        try {
+            connection = db.getConnection();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM accounts WHERE email LIKE'"+email+"' AND password LIKE '"+password+"'").executeQuery();
+
+            if(resultSet.next()){
+                return ok(Json.toJson(new DefaultSuccessMessage(0, "Correct password")));
+            }
+
+            return badRequest(Json.toJson(new DefaultErrorMessage(14, "Email or password is incorrect")));
+
+        } catch (SQLException e){
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
 }
