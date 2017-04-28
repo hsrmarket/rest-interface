@@ -351,7 +351,7 @@ public class AccountController extends Controller {
             try {
                 connection.close();
             } catch (SQLException e) {
-                e.printStackTrace();
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
         }
 
