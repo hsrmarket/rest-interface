@@ -62,6 +62,9 @@
     GET     /api/purchases/:id                  controllers.PurchaseController.getOnePurchase(id:Integer)
     DELETE  /api/purchases/:id                  controllers.PurchaseController.deletePurchase(id:Integer)
 
+    #All calls for user
+    PUT     /api/user/:id                       controllers.AccountController.updateOneAccount(id:Integer)
+    POST    /api/user/login                     controllers.AccountController.login
 
     # Map static resources from the /public folder to the /assets URL path
     # Needed for files in the public folder like js or stylesheets etc.
@@ -155,8 +158,8 @@
             <pre><code>public class Purchase {
 
     private Integer id;
-    private Integer articleId;
-    private Integer buyerId;
+    private Article article;
+    private Account buyer;
     private Boolean isCompleted;
     private Date purchaseDate;
 
