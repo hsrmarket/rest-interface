@@ -1,10 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import models.Account;
-import models.Address;
-import models.DefaultErrorMessage;
-import models.DefaultSuccessMessage;
+import models.*;
 import play.db.Database;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -355,6 +352,34 @@ public class AccountController extends Controller {
             }
         }
 
+    }
+
+
+    public Result getAllArticlesFromAccount(Integer id){
+
+        try {
+            connection = db.getConnection();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articleaccountallocation WHERE account_id='"+id+"'").executeQuery();
+            ArrayList<Article> list = new ArrayList<>();
+            ArticleController articleController = new ArticleController(db);
+
+            while(resultSet.next()){
+                Article article = articleController.getOneRawArticle(resultSet.getInt("article_id"));
+                list.add(article);
+            }
+
+            return ok(Json.toJson(list));
+
+        } catch (SQLException e) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
+        }
     }
 
 }
