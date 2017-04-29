@@ -337,7 +337,7 @@ public class AccountController extends Controller {
 
         try {
             connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM accounts WHERE email LIKE'"+email+"' AND password LIKE '"+password+"'").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM accounts WHERE email LIKE'"+email+"' AND pw LIKE '"+password+"'").executeQuery();
 
             if(resultSet.next()){
                 return ok(Json.toJson(new DefaultSuccessMessage(0, "Correct password")));
