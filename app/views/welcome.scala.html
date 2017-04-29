@@ -63,6 +63,7 @@
     DELETE  /api/purchases/:id                  controllers.PurchaseController.deletePurchase(id:Integer)
 
     #All calls for user
+    GET     /api/user/:id/articles              controllers.AccountController.getAllArticlesFromAccount(id:Integer)
     PUT     /api/user/:id                       controllers.AccountController.updateOneAccount(id:Integer)
     POST    /api/user/login                     controllers.AccountController.login
 
