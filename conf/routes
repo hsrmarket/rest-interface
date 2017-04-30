@@ -8,21 +8,23 @@ GET     /                                   controllers.HomeController.index
 GET     /api/articles                       controllers.ArticleController.getAllArticles
 POST    /api/articles                       controllers.ArticleController.insertArticle
 GET     /api/articles/recent                controllers.ArticleController.getRecentArticles
-
 GET     /api/articles/books                 controllers.BookController.getAllBooks
-
-
 GET     /api/articles/electronics           controllers.ElectronicController.getAllElectronics
-
-
 GET     /api/articles/officesupplies        controllers.OfficeSupplyController.getAllOfficeSupplies
-
-
 GET     /api/articles/other                 controllers.OtherArticleController.getAllOtherArticles
-
 
 GET     /api/articles/:id                   controllers.ArticleController.getOneArticle(id:Integer)
 PUT     /api/articles/:id                   controllers.ArticleController.updateOneArticle(id:Integer)
+
+
+GET     /api/accounts                       controllers.AccountController.getAllAccounts
+POST    /api/accounts                       controllers.AccountController.insertAccount
+GET     /api/accounts/admin                 controllers.AccountController.getAdminAccounts
+GET     /api/accounts/normal                controllers.AccountController.getNormalAccounts
+
+GET     /api/accounts/:id                   controllers.AccountController.getOneAccount(id:Integer)
+DELETE  /api/accounts/:id                   controllers.AccountController.deleteAccount(id:Integer)
+
 
 # Map static resources from the /public folder to the /assets URL path
 # Needed for files in the public folder like js or stylesheets etc.
