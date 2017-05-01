@@ -34,6 +34,7 @@
     # An example controller showing a sample home page
     GET     /                                   controllers.HomeController.index
 
+    # All calls for articles
     GET     /api/articles                       controllers.ArticleController.getAllArticles
     POST    /api/articles                       controllers.ArticleController.insertArticle
     GET     /api/articles/recent                controllers.ArticleController.getRecentArticles
@@ -45,6 +46,27 @@
     GET     /api/articles/:id                   controllers.ArticleController.getOneArticle(id:Integer)
     PUT     /api/articles/:id                   controllers.ArticleController.updateOneArticle(id:Integer)
 
+    # All calls for accounts
+    GET     /api/accounts                       controllers.AccountController.getAllAccounts
+    POST    /api/accounts                       controllers.AccountController.insertAccount
+    GET     /api/accounts/admin                 controllers.AccountController.getAdminAccounts
+    GET     /api/accounts/normal                controllers.AccountController.getNormalAccounts
+
+    GET     /api/accounts/:id                   controllers.AccountController.getOneAccount(id:Integer)
+    DELETE  /api/accounts/:id                   controllers.AccountController.deleteAccount(id:Integer)
+
+    # All calls for purchases
+    GET     /api/purchases                      controllers.PurchaseController.getAllPurchases
+    POST    /api/purchases                      controllers.PurchaseController.insertPurchase
+
+    GET     /api/purchases/:id                  controllers.PurchaseController.getOnePurchase(id:Integer)
+    DELETE  /api/purchases/:id                  controllers.PurchaseController.deletePurchase(id:Integer)
+
+    #All calls for user
+    GET     /api/user/:id/articles              controllers.AccountController.getAllArticlesFromAccount(id:Integer)
+    GET     /api/user/:id/purchases             controllers.AccountController.getAllBoughtArticlesFromAccount(id:Integer)
+    PUT     /api/user/:id                       controllers.AccountController.updateOneAccount(id:Integer)
+    POST    /api/user/login                     controllers.AccountController.login
 
     GET     /api/accounts                       controllers.AccountController.getAllAccounts
     POST    /api/accounts                       controllers.AccountController.insertAccount
@@ -138,7 +160,20 @@
     private Integer zip;
     private String city;
 
-    //constructor, Getters and Setters
+    //Constructor, Getters and Setters
+
+}</code></pre>
+
+            <h3>Purchase</h3>
+            <pre><code>public class Purchase {
+
+    private Integer id;
+    private Article article;
+    private Account buyer;
+    private Boolean isCompleted;
+    private Date purchaseDate;
+
+    //Constructor, Getters and Setters
 
 }</code></pre>
 

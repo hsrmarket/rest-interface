@@ -25,6 +25,7 @@ public class ArticleController extends Controller {
         this.db = db;
     }
 
+
     public Result insertArticle(){
 
         JsonNode json = request().body().asJson();
@@ -40,28 +41,20 @@ public class ArticleController extends Controller {
             switch (type) {
 
                 case "book":
-                    Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
-                    //Properties checker
                     BookController bc = new BookController(db);
-                    return bc.insertBook(book);
+                    return bc.insertBook();
 
                 case "electronic":
-                    Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"electronic",json.findPath("producer").textValue(),json.findPath("model").textValue());
-                    //Properties checker
                     ElectronicController ec = new ElectronicController(db);
-                    return ec.insertElectronic(electronic);
+                    return ec.insertElectronic();
 
                 case "office supply":
-                    OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
-                    //Properties checker
                     OfficeSupplyController osc = new OfficeSupplyController(db);
-                    return osc.insertOfficeSupply(officeSupply);
+                    return osc.insertOfficeSupply();
 
                 case "other":
-                    OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
-                    //Properties checker
                     OtherArticleController oac = new OtherArticleController(db);
-                    return oac.insertOtherArticle(otherArticle);
+                    return oac.insertOtherArticle();
 
                 default:
                     return badRequest(Json.toJson(new DefaultErrorMessage(13,"No matching type object")));
@@ -100,34 +93,46 @@ public class ArticleController extends Controller {
 
 
     public Result getOneArticle(Integer id){
-
         try {
-            String table = inWhichTable(id);
-            switch (table){
-
-                case "books":
-                    BookController bc = new BookController(db);
-                    return bc.getOneBook(id);
-
-                case "electronics":
-                    ElectronicController ec = new ElectronicController(db);
-                    return ec.getOneElectronic(id);
-
-                case "officeSupplies":
-                    OfficeSupplyController osc = new OfficeSupplyController(db);
-                    return osc.getOneOfficeSupply(id);
-
-                case "otherarticles":
-                    OtherArticleController oac = new OtherArticleController(db);
-                    return oac.getOneOtherArticle(id);
-
-                default:
-                    return badRequest(Json.toJson(new DefaultErrorMessage(14,"No article with given ID found")));
-            }
-
-        }catch (SQLException e){
+            return ok(Json.toJson(getOneRawArticle(id)));
+        } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
         }
+    }
+
+
+    public Article getOneRawArticle(Integer id) throws SQLException{
+
+        String table = inWhichTable(id);
+        switch (table){
+
+            case "books":
+                BookController bc = new BookController(db);
+                return bc.getOneRawBook(id);
+
+            case "electronics":
+                ElectronicController ec = new ElectronicController(db);
+                return ec.getOneRawElectronic(id);
+
+            case "officeSupplies":
+                OfficeSupplyController osc = new OfficeSupplyController(db);
+                return osc.getOneRawOfficeSupply(id);
+
+            case "otherarticles":
+                OtherArticleController oac = new OtherArticleController(db);
+                return oac.getOneRawOtherArticle(id);
+
+            default:
+                throw new SQLException("No article with given ID found");
+        }
+
+
     }
 
 
@@ -143,32 +148,20 @@ public class ArticleController extends Controller {
         switch (json.findPath("type").textValue()){
 
             case "book":
-                Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
-                book.setId(json.findPath("id").intValue());
-                //Properties checker
                 BookController bc = new BookController(db);
-                return bc.updateOneBook(book);
+                return bc.updateOneBook(id);
 
             case "electronic":
-                Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"electronic",json.findPath("producer").textValue(),json.findPath("model").textValue());
-                electronic.setId(json.findPath("id").intValue());
-                //Properties checker
                 ElectronicController ec = new ElectronicController(db);
-                return ec.updateOneElectronic(electronic);
+                return ec.updateOneElectronic(id);
 
             case "office supply":
-                OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
-                officeSupply.setId(json.findPath("id").intValue());
-                //Properties checker
                 OfficeSupplyController osc = new OfficeSupplyController(db);
-                return osc.updateOneOfficeSupply(officeSupply);
+                return osc.updateOneOfficeSupply(id);
 
             case "other":
-                OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
-                otherArticle.setId(json.findPath("id").intValue());
-                //Properties checker
                 OtherArticleController oac = new OtherArticleController(db);
-                return oac.updateOneOtherArticle(otherArticle);
+                return oac.updateOneOtherArticle(id);
 
             default:
                 return badRequest(Json.toJson(new DefaultErrorMessage(13,"No matching type object")));
@@ -207,7 +200,7 @@ public class ArticleController extends Controller {
 
     private String inWhichTable(Integer id) throws SQLException{
 
-        Connection connection = db.getConnection();
+        connection = db.getConnection();
 
         ResultSet bookResultSet = connection.prepareStatement("SELECT * FROM books where book_id ="+id+"").executeQuery();
         ResultSet electronicResultSet = connection.prepareStatement("SELECT * FROM electronics where electronic_id ="+id+"").executeQuery();
