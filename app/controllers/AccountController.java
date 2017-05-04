@@ -334,6 +334,7 @@ public class AccountController extends Controller {
 
         try {
             connection = db.getConnection();
+            System.out.println("Connection open");
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM accounts WHERE email LIKE'"+email+"' AND pw LIKE '"+password+"'").executeQuery();
 
             if(resultSet.next()){
@@ -346,6 +347,7 @@ public class AccountController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
         } finally {
             try {
+                System.out.println("Connection close");
                 connection.close();
             } catch (SQLException e) {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
