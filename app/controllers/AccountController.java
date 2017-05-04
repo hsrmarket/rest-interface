@@ -347,7 +347,7 @@ public class AccountController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
         } finally {
             try {
-                System.out.println("Connection close");
+                System.out.println("Connection close - the end");
                 connection.close();
             } catch (SQLException e) {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
