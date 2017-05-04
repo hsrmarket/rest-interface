@@ -73,6 +73,8 @@ public class PurchaseController extends Controller {
         purchaseGeneratedKeys.next();
         purchase.setId(purchaseGeneratedKeys.getInt(1));
 
+        connection.close();
+
         return purchase;
     }
 
