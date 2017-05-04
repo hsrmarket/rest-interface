@@ -67,7 +67,7 @@ public class ArticleController extends Controller {
     public Result getAllArticles(){
 
         try {
-            connection = db.getConnection();
+            Connection connection = db.getConnection();
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles").executeQuery();
             ArrayList<Article> list = new ArrayList<>();
 
