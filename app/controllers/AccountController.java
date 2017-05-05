@@ -250,12 +250,19 @@ public class AccountController extends Controller {
             address.setId(resultSet.getInt("address_id"));
             Account account = new Account(resultSet.getInt("studentid"),resultSet.getString("firstname"),resultSet.getString("lastname"),address,resultSet.getString("email"),resultSet.getString("tel"),resultSet.getString("pw"),resultSet.getBoolean("isadmin"));
             account.setId(resultSet.getInt("account_id"));
-
-            connection.close();
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new SQLException("No account with given ID found");
+            }
             return account;
         }
 
-        connection.close();
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new SQLException("No account with given ID found");
+        }
         throw new SQLException("No account with given ID found");
     }
 
@@ -322,38 +329,48 @@ public class AccountController extends Controller {
     }
 
 
-    public Result login(){
+    public Result login() {
         JsonNode json = request().body().asJson();
 
         if(json == null) {
             return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
         }
 
-        String email = json.findPath("email").textValue();
-        String password = json.findPath("password").textValue();
+        String mail = json.findPath("email").asText();
+        String password = json.findPath("password").asText();
 
+        connection = db.getConnection();
+        ResultSet resultSet = null;
         try {
-            connection = db.getConnection();
-            System.out.println("Connection open");
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM accounts WHERE email LIKE'"+email+"' AND pw LIKE '"+password+"'").executeQuery();
+            resultSet = connection.prepareStatement("SELECT * FROM accounts WHERE email LIKE '" + mail + "' AND pw LIKE '" + password + "'").executeQuery();
+            boolean isEmpty = resultSet.next();
 
-            if(resultSet.next()){
-                return ok(Json.toJson(getOneRawAccount(resultSet.getInt("account_id"))));
+            // Diese if Else mit doppelten Ausdrücken ist nötig, damit diese Methode so funktioniert wie sie sollte.
+            // Aus Zeitgründen wurde auf eine weitere Ausarbeitung verzichtet.
+            // Normalerweise würde mit finally die connection geschlossen, doch dies funktioniert hier aus
+            // unerklärlichen Gründen nicht
+            if (isEmpty == false) {
+                resultSet.close();
+                connection.close();
+                return badRequest(Json.toJson(new DefaultErrorMessage(14, "Email or password is incorrect")));
+            }
+            else {
+                int accountIDQuery = resultSet.getInt("account_id");
+                resultSet.close();
+                connection.close();
+                Account account  = getOneRawAccount(accountIDQuery);
+                return ok(Json.toJson(account));
             }
 
-            return badRequest(Json.toJson(new DefaultErrorMessage(14, "Email or password is incorrect")));
-
-        } catch (SQLException e){
-            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-        } finally {
+        } catch (SQLException e) {
             try {
-                System.out.println("Connection close - the end");
                 connection.close();
-            } catch (SQLException e) {
+                resultSet.close();
+            } catch (SQLException e1) {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
         }
-
     }
 
 
