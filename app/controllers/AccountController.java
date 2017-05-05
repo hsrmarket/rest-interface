@@ -347,6 +347,8 @@ public class AccountController extends Controller {
 
             // Diese if Else mit doppelten Ausdrücken ist nötig, damit diese Methode so funktioniert wie sie sollte.
             // Aus Zeitgründen wurde auf eine weitere Ausarbeitung verzichtet.
+            // Normalerweise würde mit finally die connection geschlossen, doch dies funktioniert hier aus
+            // unerklärlichen Gründen nicht
             if (isEmpty == false) {
                 resultSet.close();
                 connection.close();
@@ -361,8 +363,13 @@ public class AccountController extends Controller {
             }
 
         } catch (SQLException e) {
+            try {
+                connection.close();
+                resultSet.close();
+            } catch (SQLException e1) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-
         }
     }
 
