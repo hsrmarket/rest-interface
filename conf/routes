@@ -23,7 +23,7 @@ POST    /api/purchases                      controllers.PurchaseController.inser
 GET     /api/purchases/:id                  controllers.PurchaseController.getOnePurchase(id:Integer)
 DELETE  /api/purchases/:id                  controllers.PurchaseController.deletePurchase(id:Integer)
 
-#All calls for user
+# All calls for user
 GET     /api/user/:id/articles              controllers.AccountController.getAllArticlesFromAccount(id:Integer)
 GET     /api/user/:id/purchases             controllers.AccountController.getAllBoughtArticlesFromAccount(id:Integer)
 PUT     /api/user/:id                       controllers.AccountController.updateOneAccount(id:Integer)
@@ -37,6 +37,9 @@ GET     /api/accounts/normal                controllers.AccountController.getNor
 GET     /api/accounts/:id                   controllers.AccountController.getOneAccount(id:Integer)
 PUT     /api/accounts/:id                   controllers.AccountController.updateOneAccount(id:Integer)
 DELETE  /api/accounts/:id                   controllers.AccountController.deleteAccount(id:Integer)
+
+# Search
+POST    /api/search                         controllers.ArticleController.getAllArticlesFromSearch
 
 
 # Map static resources from the /public folder to the /assets URL path
