@@ -198,6 +198,44 @@ public class ArticleController extends Controller {
     }
 
 
+    public Result getAllArticlesFromSearch(){
+        JsonNode json = request().body().asJson();
+
+        if(json == null) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
+        }
+        String search = json.findPath("search").textValue();
+
+        if(search == null || search.isEmpty()){
+            return badRequest(Json.toJson(new DefaultErrorMessage(12,"Missing Parameter (search)")));
+        }
+
+        try {
+            connection = db.getConnection();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles WHERE 1=1 AND LOWER(name) LIKE LOWER('%"+search+"%') OR LOWER(description) LIKE LOWER('%"+search+"%') ORDER BY article_id").executeQuery();
+            ArrayList<Article> list = new ArrayList<>();
+
+            while(resultSet.next()){
+                Article article = new Article(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"article");
+                article.setId(resultSet.getInt("article_id"));
+                list.add(article);
+            }
+
+            return ok(Json.toJson(list));
+
+        } catch (SQLException e) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
+        }
+    }
+
+
     private String inWhichTable(Integer id) throws SQLException{
 
         connection = db.getConnection();
