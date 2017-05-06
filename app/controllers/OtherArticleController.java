@@ -138,7 +138,7 @@ public class OtherArticleController extends Controller {
         try {
             connection = db.getConnection();
 
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN otherarticles on articles.article_id = otherarticles.otherarticle_id").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN otherarticles on articles.article_id = otherarticles.otherarticle_id LEFT JOIN purchase on articles.article_id  = purchase.article_id WHERE purchase.purchase_id IS NULL;").executeQuery();
             ArrayList<OtherArticle> list = new ArrayList<>();
 
             while(resultSet.next()){

@@ -154,7 +154,9 @@ public class ElectronicController extends Controller{
         try {
             connection = db.getConnection();
 
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN electronics on articles.article_id = electronics.electronic_id;").executeQuery();
+
+
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN electronics on articles.article_id = electronics.electronic_id LEFT JOIN purchase on articles.article_id  = purchase.article_id WHERE purchase.purchase_id IS NULL;").executeQuery();
             ArrayList<Electronic> list = new ArrayList<>();
 
             while(resultSet.next()){
