@@ -31,9 +31,10 @@ public class OtherArticleController extends Controller {
 
         OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
         //Properties checker
+        int account_id = json.findPath("createdby").intValue();
 
         try {
-            return ok(Json.toJson(insertOtherArticle(otherArticle)));
+            return ok(Json.toJson(insertOtherArticle(otherArticle, account_id)));
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
         } finally {
@@ -46,7 +47,7 @@ public class OtherArticleController extends Controller {
     }
 
 
-    private OtherArticle insertOtherArticle(OtherArticle otherArticle) throws SQLException{
+    private OtherArticle insertOtherArticle(OtherArticle otherArticle, int account_id) throws SQLException{
 
         connection = db.getConnection();
         PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -68,6 +69,11 @@ public class OtherArticleController extends Controller {
         PreparedStatement otherArticleStatement = connection.prepareStatement("INSERT INTO otherarticles (otherarticle_id) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
 
         if (articleGeneratedKeys.next()) {
+            PreparedStatement allocationStatement = connection.prepareStatement("INSERT INTO articleaccountallocation (account_id, article_id) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+            allocationStatement.setInt(1,account_id);
+            allocationStatement.setInt(2,articleGeneratedKeys.getInt(1));
+            allocationStatement.executeUpdate();
+
             otherArticleStatement.setInt(1,articleGeneratedKeys.getInt(1));
             otherArticleStatement.executeUpdate();
 

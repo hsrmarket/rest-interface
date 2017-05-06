@@ -32,9 +32,10 @@ public class BookController extends Controller {
 
         Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
         //Properties checker
+        int account_id = json.findPath("createdby").intValue();
 
         try {
-            return ok(Json.toJson(insertBook(book)));
+            return ok(Json.toJson(insertBook(book, account_id)));
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
         } finally {
@@ -47,7 +48,7 @@ public class BookController extends Controller {
     }
 
 
-    private Book insertBook(Book book) throws SQLException{
+    private Book insertBook(Book book, int account_id) throws SQLException{
 
         connection = db.getConnection();
         PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -65,11 +66,16 @@ public class BookController extends Controller {
             throw new SQLException("Creating book failed, no rows affected.");
         }
 
-
         ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+
         PreparedStatement bookStatement = connection.prepareStatement("INSERT INTO books (book_id, author, publisher, isbn) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
         if (articleGeneratedKeys.next()) {
+            PreparedStatement allocationStatement = connection.prepareStatement("INSERT INTO articleaccountallocation (account_id, article_id) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+            allocationStatement.setInt(1,account_id);
+            allocationStatement.setInt(2,articleGeneratedKeys.getInt(1));
+            allocationStatement.executeUpdate();
+
             bookStatement.setInt(1,articleGeneratedKeys.getInt(1));
             bookStatement.setString(2,book.getAuthor());
             bookStatement.setString(3,book.getPublisher());
