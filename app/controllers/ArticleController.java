@@ -68,7 +68,7 @@ public class ArticleController extends Controller {
 
         try {
             connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles LEFT JOIN purchase on articles.article_id  = purchase.article_id WHERE purchase.purchase_id IS NULL;").executeQuery();
             ArrayList<Article> list = new ArrayList<>();
 
             while(resultSet.next()){
