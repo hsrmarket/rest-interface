@@ -428,7 +428,8 @@ public class AccountController extends Controller {
         }
     }
 
-    public Result getAllSales(Integer id){
+
+    public Result getAllSoldArticlesFromAccount(Integer id){
         try {
             connection = db.getConnection();
             ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase WHERE seller_id='"+id+"'").executeQuery();
