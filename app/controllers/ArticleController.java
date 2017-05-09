@@ -72,7 +72,7 @@ public class ArticleController extends Controller {
             ArrayList<Article> list = new ArrayList<>();
 
             while(resultSet.next()){
-                Article article = new Article(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"article");
+                Article article = new Article(resultSet.getString("name"),resultSet.getDouble("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"article");
                 article.setId(resultSet.getInt("article_id"));
                 list.add(article);
             }
@@ -178,7 +178,7 @@ public class ArticleController extends Controller {
             ArrayList<Article> list = new ArrayList<>();
 
             while(resultSet.next()){
-                Article article = new Article(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"article");
+                Article article = new Article(resultSet.getString("name"),resultSet.getDouble("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"article");
                 article.setId(resultSet.getInt("article_id"));
                 list.add(article);
             }
@@ -216,7 +216,7 @@ public class ArticleController extends Controller {
             ArrayList<Article> list = new ArrayList<>();
 
             while(resultSet.next()){
-                Article article = new Article(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"article");
+                Article article = new Article(resultSet.getString("name"),resultSet.getDouble("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"article");
                 article.setId(resultSet.getInt("article_id"));
                 list.add(article);
             }

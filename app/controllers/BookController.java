@@ -30,7 +30,7 @@ public class BookController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
         }
 
-        Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
+        Book book = new Book(json.findPath("name").textValue(),json.findPath("price").doubleValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
         //Properties checker
         int account_id = json.findPath("createdby").intValue();
 
@@ -56,7 +56,7 @@ public class BookController extends Controller {
         articleStatement.setString(1,book.getName());
         articleStatement.setString(2,book.getDescription());
         articleStatement.setInt(3,book.getCondition());
-        articleStatement.setInt(4,book.getPrice());
+        articleStatement.setDouble(4,book.getPrice());
         articleStatement.setDate(5,book.getCreationDate());
         articleStatement.setString(6,book.getImage());
 
@@ -103,7 +103,7 @@ public class BookController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(12,"Missing Parameter (ID)")));
         }
 
-        Book book = new Book(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
+        Book book = new Book(json.findPath("name").textValue(),json.findPath("price").doubleValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
         //Properties checker
         book.setId(json.findPath("id").intValue());
 
@@ -129,7 +129,7 @@ public class BookController extends Controller {
         articleStatement.setString(1,book.getName());
         articleStatement.setString(2,book.getDescription());
         articleStatement.setInt(3,book.getCondition());
-        articleStatement.setInt(4,book.getPrice());
+        articleStatement.setDouble(4,book.getPrice());
         articleStatement.setDate(5,book.getCreationDate());
         articleStatement.setString(6,book.getImage());
         articleStatement.setInt(7,book.getId());
@@ -167,7 +167,7 @@ public class BookController extends Controller {
             ArrayList<Book> list = new ArrayList<>();
 
             while(resultSet.next()){
-                Book book = new Book(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"book",resultSet.getString("isbn"),resultSet.getString("author"),resultSet.getString("publisher"));
+                Book book = new Book(resultSet.getString("name"),resultSet.getDouble("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"book",resultSet.getString("isbn"),resultSet.getString("author"),resultSet.getString("publisher"));
                 book.setId(resultSet.getInt("article_id"));
                 list.add(book);
             }
@@ -208,7 +208,7 @@ public class BookController extends Controller {
         ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN books on articles.article_id = books.book_id WHERE article_id ="+id+"").executeQuery();
 
         if(resultSet.next()){
-            Book book = new Book(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"book",resultSet.getString("isbn"),resultSet.getString("author"),resultSet.getString("publisher"));
+            Book book = new Book(resultSet.getString("name"),resultSet.getDouble("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"book",resultSet.getString("isbn"),resultSet.getString("author"),resultSet.getString("publisher"));
             book.setId(resultSet.getInt("article_id"));
 
             connection.close();

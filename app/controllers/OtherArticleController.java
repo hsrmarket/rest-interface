@@ -29,7 +29,7 @@ public class OtherArticleController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
         }
 
-        OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
+        OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").doubleValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
         //Properties checker
         int account_id = json.findPath("createdby").intValue();
 
@@ -55,7 +55,7 @@ public class OtherArticleController extends Controller {
         articleStatement.setString(1,otherArticle.getName());
         articleStatement.setString(2,otherArticle.getDescription());
         articleStatement.setInt(3,otherArticle.getCondition());
-        articleStatement.setInt(4,otherArticle.getPrice());
+        articleStatement.setDouble(4,otherArticle.getPrice());
         articleStatement.setDate(5,otherArticle.getCreationDate());
         articleStatement.setString(6,otherArticle.getImage());
 
@@ -99,7 +99,7 @@ public class OtherArticleController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(12,"Missing Parameter (ID)")));
         }
 
-        OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
+        OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").doubleValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
         //Properties checker
         otherArticle.setId(json.findPath("id").intValue());
         try {
@@ -124,7 +124,7 @@ public class OtherArticleController extends Controller {
         articleStatement.setString(1,otherArticle.getName());
         articleStatement.setString(2,otherArticle.getDescription());
         articleStatement.setInt(3,otherArticle.getCondition());
-        articleStatement.setInt(4,otherArticle.getPrice());
+        articleStatement.setDouble(4,otherArticle.getPrice());
         articleStatement.setDate(5,otherArticle.getCreationDate());
         articleStatement.setString(6,otherArticle.getImage());
         articleStatement.setInt(7,otherArticle.getId());
@@ -148,7 +148,7 @@ public class OtherArticleController extends Controller {
             ArrayList<OtherArticle> list = new ArrayList<>();
 
             while(resultSet.next()){
-                OtherArticle otherArticle = new OtherArticle(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"other");
+                OtherArticle otherArticle = new OtherArticle(resultSet.getString("name"),resultSet.getDouble("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"other");
                 otherArticle.setId(resultSet.getInt("article_id"));
                 list.add(otherArticle);
             }
@@ -189,14 +189,14 @@ public class OtherArticleController extends Controller {
         ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN otherarticles on articles.article_id = otherarticles.otherarticle_id WHERE article_id ="+id+"").executeQuery();
 
         if(resultSet.next()){
-            OtherArticle otherArticle = new OtherArticle(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"other");
+            OtherArticle otherArticle = new OtherArticle(resultSet.getString("name"),resultSet.getDouble("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"other");
             otherArticle.setId(resultSet.getInt("article_id"));
 
             connection.close();
             return otherArticle;
         }
 
-        connection.close();
+        connection.close();/**/
         throw new SQLException("No other article with given ID found");
 
     }
