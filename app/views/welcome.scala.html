@@ -52,6 +52,7 @@
     POST    /api/purchases                      controllers.PurchaseController.insertPurchase
     GET     /api/purchases/:id                  controllers.PurchaseController.getOnePurchase(id:Integer)
     DELETE  /api/purchases/:id                  controllers.PurchaseController.deletePurchase(id:Integer)
+    PATCH   /api/purchases/:id                  controllers.PurchaseController.updatePurchase(id:Integer)
 
     #All calls for user/account
     GET     /api/user/:id/articles              controllers.AccountController.getAllArticlesFromAccount(id:Integer)
