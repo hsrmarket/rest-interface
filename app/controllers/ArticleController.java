@@ -245,7 +245,7 @@ public class ArticleController extends Controller {
             if(affectedArticleRow != 0 && affectedAllocationRow != 0) {
                 return ok(Json.toJson(new DefaultSuccessMessage(0, "Article successfully deleted")));
             } else {
-                throw new SQLException("Deleting purchase failed, no rows affected.");
+                throw new SQLException("Deleting article failed, no rows affected.");
             }
 
         } catch (SQLException e) {
