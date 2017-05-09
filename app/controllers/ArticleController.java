@@ -9,10 +9,7 @@ import play.mvc.Controller;
 import models.*;
 
 import javax.inject.Inject;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class ArticleController extends Controller {
@@ -227,6 +224,34 @@ public class ArticleController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
 
         }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
+        }
+    }
+
+
+    public Result deleteArticle(Integer id){
+        try {
+            connection = db.getConnection();
+
+            PreparedStatement deleteArticleAccountAllocationStatement = connection.prepareStatement("DELETE FROM articleaccountallocation WHERE article_id = "+id+"", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement deleteArticleStatement = connection.prepareStatement("DELETE FROM articles WHERE article_id = "+id+"", Statement.RETURN_GENERATED_KEYS);
+            int affectedAllocationRow = deleteArticleAccountAllocationStatement.executeUpdate();
+            int affectedArticleRow = deleteArticleStatement.executeUpdate();
+
+            if(affectedArticleRow != 0 && affectedAllocationRow != 0) {
+                return ok(Json.toJson(new DefaultSuccessMessage(0, "Article successfully deleted")));
+            } else {
+                throw new SQLException("Deleting purchase failed, no rows affected.");
+            }
+
+        } catch (SQLException e) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+
+        } finally {
             try {
                 connection.close();
             } catch (SQLException e) {
