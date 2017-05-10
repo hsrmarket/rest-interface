@@ -36,7 +36,25 @@ public class PurchaseController extends Controller {
         Account account = new Account(null,null,null,null,null,null,null,false);
         account.setId(json.get("buyer").findPath("id").asInt());
 
-        Purchase purchase = new Purchase(article,account,json.findPath("completed").asBoolean(),Date.valueOf(json.findPath("purchaseDate").asText()));
+        Account seller = new Account(null,null,null,null,null,null,null,false);
+
+        connection = db.getConnection();
+        ResultSet resultSet = null;
+
+        int accountIDQuery = 0;
+
+        try {
+            resultSet = connection.prepareStatement("SELECT account_id FROM articleaccountallocation WHERE article_id = '" + article.getId() + "'").executeQuery();
+            boolean isEmpty = resultSet.next();
+            accountIDQuery = resultSet.getInt("account_id");
+            resultSet.close();
+            connection.close();
+        } catch (SQLException e) {
+
+        }
+        seller.setId(accountIDQuery);
+
+        Purchase purchase = new Purchase(article,account,json.findPath("completed").asBoolean(),Date.valueOf(json.findPath("purchaseDate").asText()),seller);
         //Properties checker
 
         try {
@@ -56,12 +74,13 @@ public class PurchaseController extends Controller {
     private Purchase insertPurchase(Purchase purchase) throws SQLException{
 
         connection = db.getConnection();
-        PreparedStatement purchaseStatement = connection.prepareStatement("INSERT INTO purchase (article_id, buyer_id, iscompleted, purchasedate) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement purchaseStatement = connection.prepareStatement("INSERT INTO purchase (article_id, buyer_id, iscompleted, purchasedate, seller_id) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
         purchaseStatement.setInt(1,purchase.getArticle().getId());
         purchaseStatement.setInt(2,purchase.getBuyer().getId());
         purchaseStatement.setBoolean(3,purchase.getCompleted());
         purchaseStatement.setDate(4,purchase.getPurchaseDate());
+        purchaseStatement.setInt(5,purchase.getSeller().getId());
 
         int affectedRows = purchaseStatement.executeUpdate();
 
@@ -114,7 +133,7 @@ public class PurchaseController extends Controller {
             ArticleController articleController = new ArticleController(db);
 
             while(resultSet.next()){
-                Purchase purchase = new Purchase(articleController.getOneRawArticle(resultSet.getInt("article_id")),accountController.getOneRawAccount(resultSet.getInt("buyer_id")),resultSet.getBoolean("iscompleted"),resultSet.getDate("purchasedate"));
+                Purchase purchase = new Purchase(articleController.getOneRawArticle(resultSet.getInt("article_id")),accountController.getOneRawAccount(resultSet.getInt("buyer_id")),resultSet.getBoolean("iscompleted"),resultSet.getDate("purchasedate"),accountController.getOneRawAccount(resultSet.getInt("seller_id")));
                 purchase.setId(resultSet.getInt("purchase_id"));
                 list.add(purchase);
             }
@@ -142,7 +161,7 @@ public class PurchaseController extends Controller {
             ArticleController articleController = new ArticleController(db);
 
             if(resultSet.next()){
-                Purchase purchase = new Purchase(articleController.getOneRawArticle(resultSet.getInt("article_id")),accountController.getOneRawAccount(resultSet.getInt("buyer_id")),resultSet.getBoolean("iscompleted"),resultSet.getDate("purchasedate"));
+                Purchase purchase = new Purchase(articleController.getOneRawArticle(resultSet.getInt("article_id")),accountController.getOneRawAccount(resultSet.getInt("buyer_id")),resultSet.getBoolean("iscompleted"),resultSet.getDate("purchasedate"),accountController.getOneRawAccount(resultSet.getInt("seller_id")));
                 purchase.setId(resultSet.getInt("purchase_id"));
                 return ok(Json.toJson(purchase));
             }

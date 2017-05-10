@@ -428,4 +428,31 @@ public class AccountController extends Controller {
         }
     }
 
+
+    public Result getAllSoldArticlesFromAccount(Integer id){
+        try {
+            connection = db.getConnection();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase WHERE seller_id='"+id+"'").executeQuery();
+            ArrayList<Article> salesList = new ArrayList<>();
+            ArticleController articleController = new ArticleController(db);
+
+            while(resultSet.next()){
+                Article article = articleController.getOneRawArticle(resultSet.getInt("article_id"));
+                salesList.add(article);
+            }
+
+            return ok(Json.toJson(salesList));
+
+        } catch (SQLException e) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
+        }
+    }
+
 }

@@ -32,8 +32,10 @@ public class OfficeSupplyController extends Controller {
 
         OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
         //Properties checker
+        int account_id = json.findPath("createdby").intValue();
+
         try {
-            return ok(Json.toJson(insertOfficeSupply(officeSupply)));
+            return ok(Json.toJson(insertOfficeSupply(officeSupply, account_id)));
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
         } finally {
@@ -46,7 +48,7 @@ public class OfficeSupplyController extends Controller {
     }
 
 
-    private OfficeSupply insertOfficeSupply(OfficeSupply officeSupply) throws SQLException{
+    private OfficeSupply insertOfficeSupply(OfficeSupply officeSupply, int account_id) throws SQLException{
 
         connection = db.getConnection();
         PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -68,6 +70,11 @@ public class OfficeSupplyController extends Controller {
         PreparedStatement officeSupplyStatement = connection.prepareStatement("INSERT INTO officesupplies (officesupplie_id) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
 
         if (articleGeneratedKeys.next()) {
+            PreparedStatement allocationStatement = connection.prepareStatement("INSERT INTO articleaccountallocation (account_id, article_id) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+            allocationStatement.setInt(1,account_id);
+            allocationStatement.setInt(2,articleGeneratedKeys.getInt(1));
+            allocationStatement.executeUpdate();
+
             officeSupplyStatement.setInt(1,articleGeneratedKeys.getInt(1));
             officeSupplyStatement.executeUpdate();
 
@@ -138,7 +145,9 @@ public class OfficeSupplyController extends Controller {
         try {
             connection = db.getConnection();
 
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN officesupplies on articles.article_id = officesupplies.officesupplie_id;").executeQuery();
+
+
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN officesupplies on articles.article_id = officesupplies.officesupplie_id LEFT JOIN purchase on articles.article_id  = purchase.article_id WHERE purchase.purchase_id IS NULL;").executeQuery();
             ArrayList<OfficeSupply> list = new ArrayList<>();
 
             while(resultSet.next()){

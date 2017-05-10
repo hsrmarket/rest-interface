@@ -65,6 +65,7 @@
     #All calls for user
     GET     /api/user/:id/articles              controllers.AccountController.getAllArticlesFromAccount(id:Integer)
     GET     /api/user/:id/purchases             controllers.AccountController.getAllBoughtArticlesFromAccount(id:Integer)
+    GET     /api/user/:id/sales                 controllers.AccountController.getAllSoldArticlesFromAccount(id:Integer)
     PUT     /api/user/:id                       controllers.AccountController.updateOneAccount(id:Integer)
     POST    /api/user/login                     controllers.AccountController.login
 
