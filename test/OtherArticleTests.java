@@ -14,14 +14,13 @@ import static play.test.Helpers.contentAsString;
 import static play.test.Helpers.route;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class BookTests extends WithApplication {
+public class OtherArticleTests extends WithApplication {
 
-    public static Integer BOOKID;
+    public static Integer OTHERARTICLEID;
 
     @Test
-    public void TestA_PostBookTest(){
-
-        String body = "{\"name\":\"JUnitBook\", \"price\":15, \"condition\":5, \"description\":\"This book was created with the JUnit Test\",\"creationDate\":\"2017-04-21\",\"image\":\"test.png\",\"isbn\":\"5558-34834-3453-34534\",\"author\":\"JUnit\", \"publisher\":\"JUnit\", \"type\":\"book\", \"createdby\":12}";
+    public void TestA_PostOtherArticleTest(){
+        String body = "{\"name\":\"JUnitOtherArticle\", \"price\":15, \"condition\":5, \"description\":\"This other Article was created with the JUnit Test\",\"creationDate\":\"2017-04-21\",\"image\":\"test.png\",\"type\":\"other\", \"createdby\":12}";
 
         JsonNode jsonNode = Json.parse(body);
 
@@ -33,54 +32,55 @@ public class BookTests extends WithApplication {
         //get inserted ID for further processing
         String answerString = contentAsString(result);
         JsonNode answerJson = Json.parse(answerString);
-        BOOKID = answerJson.findPath("id").intValue();
+        OTHERARTICLEID = answerJson.findPath("id").intValue();
 
-        System.out.println(BOOKID.toString());
+        System.out.println(OTHERARTICLEID.toString());
 
         assertEquals(OK,result.status());
     }
 
     @Test
-    public void TestB_GetAllBooksTest(){
+    public void TestB_GetAllOtherArticlesTest(){
         Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
-                .uri(routes.BookController.getAllBooks().url());
+                .uri(routes.OtherArticleController.getAllOtherArticles().url());
         Result result = route(request);
 
         assertEquals(OK,result.status());
     }
 
     @Test
-    public void TestC_GetOneArticleTest(){
+    public void TestC_GetOneOtherArticleTest(){
         Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
-                .uri("/api/articles/"+ BOOKID.toString());
+                .uri("/api/articles/"+ OTHERARTICLEID.toString());
         Result result = route(request);
 
         assertEquals(OK,result.status());
     }
 
     @Test
-    public void TestD_UpdateBookTest(){
-
-        String body = "{\"name\":\"JUnitBook\", \"price\":15, \"condition\":5, \"description\":\"This book was updated with the JUnit Test\",\"creationDate\":\"2017-04-21\",\"image\":\"test.png\",\"isbn\":\"5558-34834-3453-34534\",\"author\":\"JUnit\", \"publisher\":\"JUnit\", \"type\":\"book\", \"createdby\":12}";
+    public void TestD_UpdateOtherArticleTest(){
+        String body = "{\"name\":\"JUnitOtherArticle\", \"price\":15, \"condition\":5, \"description\":\"This other Article was updated with the JUnit Test\",\"creationDate\":\"2017-04-21\",\"image\":\"test.png\",\"type\":\"other\", \"createdby\":12}";
 
         JsonNode jsonNode = Json.parse(body);
 
         Http.RequestBuilder request = new Http.RequestBuilder().method("PUT")
                 .bodyJson(jsonNode)
-                .uri("/api/articles/"+ BOOKID.toString());
+                .uri("/api/articles/"+ OTHERARTICLEID.toString());
         Result result = route(request);
 
         assertEquals(OK,result.status());
     }
 
     @Test
-    public void TestE_DeleteBookTest(){
+    public void TestE_DeleteOtherArticleTest(){
 
         Http.RequestBuilder request = new Http.RequestBuilder().method("DELETE")
-                .uri("/api/articles/"+ BOOKID.toString());
+                .uri("/api/articles/"+ OTHERARTICLEID.toString());
         Result result = route(request);
 
         assertEquals(OK,result.status());
     }
+
+
 
 }

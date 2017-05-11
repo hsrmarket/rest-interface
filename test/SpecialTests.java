@@ -9,6 +9,7 @@ import play.test.WithApplication;
 import static org.junit.Assert.assertEquals;
 import static play.mvc.Http.Status.BAD_REQUEST;
 import static play.mvc.Http.Status.NOT_FOUND;
+import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.route;
 
 
@@ -98,5 +99,6 @@ public class SpecialTests extends WithApplication {
 
         assertEquals(NOT_FOUND,result.status());
     }
+
 
 }
