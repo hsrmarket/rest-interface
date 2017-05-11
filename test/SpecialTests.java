@@ -57,6 +57,34 @@ public class SpecialTests extends WithApplication {
         assertEquals(NOT_FOUND,result.status());
     }
 
+    @Test
+    public void postAccountWithWrongURITest(){
+        String body = "{\n" +
+                "    \"studentId\": 98765,\n" +
+                "    \"firstname\": \"JUnit\",\n" +
+                "    \"lastname\": \"JUnit\",\n" +
+                "    \"address\": {\n" +
+                "      \"street\": \"Highway to Hell\",\n" +
+                "      \"streetNr\": \"66\",\n" +
+                "      \"zip\": 666,\n" +
+                "      \"city\": \"Hell\"\n" +
+                "    },\n" +
+                "    \"email\": \"JUnit.JUnit@hell.com\",\n" +
+                "    \"telephone\": \"66666666666\",\n" +
+                "    \"password\": \"evil is good\",\n" +
+                "    \"admin\": true\n" +
+                "  }";
+
+        JsonNode jsonNode = Json.parse(body);
+
+        Http.RequestBuilder request = new Http.RequestBuilder().method("POST")
+                .bodyJson(jsonNode)
+                .uri("/api/accots");
+        Result result = route(request);
+
+        assertEquals(NOT_FOUND,result.status());
+    }
+
     // produces empty electronc table
     // if before insert
     @Test
@@ -100,5 +128,30 @@ public class SpecialTests extends WithApplication {
         assertEquals(NOT_FOUND,result.status());
     }
 
+    @Test
+    public void getAllAccountsTestWithWrongURI(){
+        Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
+                .uri("/api/accnts");
+        Result result = route(request);
 
+        assertEquals(NOT_FOUND,result.status());
+    }
+
+    @Test
+    public void getOneAccountWithNonExistingIDTest(){
+        Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
+                .uri("/api/accounts/0");
+        Result result = route(request);
+
+        assertEquals(BAD_REQUEST,result.status());
+    }
+
+    @Test
+    public void getOneAccountWithWrongURI(){
+        Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
+                .uri("/api/accnts/2");
+        Result result = route(request);
+
+        assertEquals(NOT_FOUND,result.status());
+    }
 }
