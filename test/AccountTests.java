@@ -113,8 +113,7 @@ public class AccountTests extends WithApplication {
 
         assertEquals(OK,result.status());
     }
-
-    @Ignore
+    
     @Test
     public void TestH_GetOneAccountTest(){
         Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
