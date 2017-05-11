@@ -19,14 +19,7 @@ public class GetAllDifferentArticlesTests extends WithApplication {
         assertEquals(OK,result.status());
     }
 
-    @Test
-    public void getAllBooksTest(){
-        Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
-                .uri(routes.BookController.getAllBooks().url());
-        Result result = route(request);
 
-        assertEquals(OK,result.status());
-    }
 
     @Test
     public void getAllElectronicsTest(){
@@ -55,13 +48,6 @@ public class GetAllDifferentArticlesTests extends WithApplication {
         assertEquals(OK,result.status());
     }
 
-    @Test
-    public void getAllBooksTestWithWrongURI(){
-        Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
-                .uri("/api/artics/books");
-        Result result = route(request);
 
-        assertEquals(NOT_FOUND,result.status());
-    }
 
 }

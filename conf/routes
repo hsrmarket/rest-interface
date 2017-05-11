@@ -20,7 +20,7 @@ DELETE  /api/articles/:id                   controllers.ArticleController.delete
 # All calls for purchases
 GET     /api/purchases                      controllers.PurchaseController.getAllPurchases
 POST    /api/purchases                      controllers.PurchaseController.insertPurchase
-GET     /api/purchases/:id                  controllers.PurchaseController.getOnePurchase(id:Integer)
+GET     /api/purchases/:id                    controllers.PurchaseController.getOnePurchase(id:Integer)
 DELETE  /api/purchases/:id                  controllers.PurchaseController.deletePurchase(id:Integer)
 PATCH   /api/purchases/:id                  controllers.PurchaseController.updatePurchase(id:Integer)
 
