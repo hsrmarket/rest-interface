@@ -101,7 +101,7 @@ public class OtherArticleController extends Controller {
 
         OtherArticle otherArticle = new OtherArticle(json.findPath("name").textValue(),json.findPath("price").doubleValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"other");
         //Properties checker
-        otherArticle.setId(json.findPath("id").intValue());
+        otherArticle.setId(id);
         try {
             return ok(Json.toJson(updateOneOtherArticle(otherArticle)));
         } catch (SQLException e) {

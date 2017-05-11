@@ -105,7 +105,7 @@ public class BookController extends Controller {
 
         Book book = new Book(json.findPath("name").textValue(),json.findPath("price").doubleValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
         //Properties checker
-        book.setId(json.findPath("id").intValue());
+        book.setId(id);
 
         try {
             return ok(Json.toJson(updateOneBook(book)));

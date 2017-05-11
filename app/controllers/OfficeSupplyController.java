@@ -101,7 +101,7 @@ public class OfficeSupplyController extends Controller {
 
         OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").doubleValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
         //Properties checker
-        officeSupply.setId(json.findPath("id").intValue());
+        officeSupply.setId(id);
 
         try {
             return ok(Json.toJson(updateOneOfficeSupply(officeSupply)));
