@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import controllers.routes;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.libs.Json;
 import play.mvc.Http;
@@ -87,6 +88,7 @@ public class SpecialTests extends WithApplication {
 
     // produces empty electronc table
     // if before insert
+    @Ignore
     @Test
     public void postElectronicWithWrongTypeTest(){
         String body = "{\"name\":\"JUnitElectronic\", \"price\":15, \"condition\":5, \"description\":\"This electronic was created with the JUnit Test\",\"creationDate\":\"2017-04-21\",\"image\":\"test.png\",\"producer\":\"JUnit\",\"model\":\"JUnit\", \"type\":\"book\", \"createdby\":12}";

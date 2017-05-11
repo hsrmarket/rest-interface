@@ -1,6 +1,7 @@
 import com.fasterxml.jackson.databind.JsonNode;
 import controllers.routes;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import play.libs.Json;
@@ -17,24 +18,25 @@ import static play.test.Helpers.route;
 public class AccountTests extends WithApplication {
 
     public static Integer ACCOUNTID;
+    public static Integer ADDRESSID;
 
     @Test
     public void TestA_PostAccountTest(){
         String body = "{\n" +
-                "    \"studentId\": 98765,\n" +
+                "    \"studentId\": 9999,\n" +
                 "    \"firstname\": \"JUnit\",\n" +
-                "    \"lastname\": \"JUnit\",\n" +
+                "    \"lastname\": \"Junit\",\n" +
                 "    \"address\": {\n" +
-                "      \"street\": \"Highway to Hell\",\n" +
-                "      \"streetNr\": \"66\",\n" +
-                "      \"zip\": 666,\n" +
-                "      \"city\": \"Hell\"\n" +
+                "      \"street\": \"I don't care\",\n" +
+                "      \"streetNr\": \"98\",\n" +
+                "      \"zip\": 7680,\n" +
+                "      \"city\": \"Greensboro\"\n" +
                 "    },\n" +
-                "    \"email\": \"JUnit.JUnit@hell.com\",\n" +
-                "    \"telephone\": \"66666666666\",\n" +
-                "    \"password\": \"evil is good\",\n" +
-                "    \"admin\": true\n" +
-                "  }";
+                "    \"email\": \"blabla@blubb.com\",\n" +
+                "    \"telephone\": \"0456781234\",\n" +
+                "    \"password\": \"test33test\",\n" +
+                "    \"admin\": false\n" +
+                "}";
 
         JsonNode jsonNode = Json.parse(body);
 
@@ -47,12 +49,13 @@ public class AccountTests extends WithApplication {
         String answerString = contentAsString(result);
         JsonNode answerJson = Json.parse(answerString);
         ACCOUNTID = answerJson.findPath("id").intValue();
+        ADDRESSID = answerJson.get("address").findPath("id").intValue();
 
         System.out.println(ACCOUNTID.toString());
 
         assertEquals(OK,result.status());
     }
-
+    
     @Test
     public void TestB_GetAllAccountsTest(){
         Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
@@ -92,26 +95,28 @@ public class AccountTests extends WithApplication {
     @Test
     public void TestF_UpdateAccountTest(){
         String body = "{\n" +
-                "    \"studentId\": 98765,\n" +
+                "    \"id\": " + ACCOUNTID.toString() + ",\n" +
+                "    \"studentId\": 9999,\n" +
                 "    \"firstname\": \"JUnit\",\n" +
-                "    \"lastname\": \"JUnit\",\n" +
+                "    \"lastname\": \"Junit\",\n" +
                 "    \"address\": {\n" +
-                "      \"street\": \"Highway to Hell\",\n" +
-                "      \"streetNr\": \"66\",\n" +
-                "      \"zip\": 666,\n" +
-                "      \"city\": \"Hell\"\n" +
+                "      \"id\": " + ADDRESSID.toString() + ",\n" +
+                "      \"street\": \"I do care\",\n" +
+                "      \"streetNr\": \"98\",\n" +
+                "      \"zip\": 7680,\n" +
+                "      \"city\": \"Greensboro\"\n" +
                 "    },\n" +
-                "    \"email\": \"JUnit.JUnit@hell.com\",\n" +
-                "    \"telephone\": \"66666666666\",\n" +
-                "    \"password\": \"evil is not good\",\n" +
+                "    \"email\": \"blabla@blabb.ch\",\n" +
+                "    \"telephone\": \"0456781234\",\n" +
+                "    \"password\": \"test44test\",\n" +
                 "    \"admin\": false\n" +
-                "  }";
+                "}";
 
         JsonNode jsonNode = Json.parse(body);
 
         Http.RequestBuilder request = new Http.RequestBuilder().method("PUT")
                 .bodyJson(jsonNode)
-                .uri("/api/accounts");
+                .uri("/api/accounts/" + ACCOUNTID.toString());
         Result result = route(request);
 
         assertEquals(OK,result.status());

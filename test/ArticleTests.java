@@ -18,4 +18,13 @@ public class ArticleTests extends WithApplication{
 
         assertEquals(OK,result.status());
     }
+
+    @Test
+    public void getRecentArticlesTest(){
+        Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
+                .uri(routes.ArticleController.getRecentArticles().url());
+        Result result = route(request);
+
+        assertEquals(OK,result.status());
+    }
 }
