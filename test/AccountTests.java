@@ -88,4 +88,43 @@ public class AccountTests extends WithApplication {
 
         assertEquals(OK,result.status());
     }
+
+    @Test
+    public void TestF_UpdateAccountTest(){
+        String body = "{\n" +
+                "    \"studentId\": 98765,\n" +
+                "    \"firstname\": \"JUnit\",\n" +
+                "    \"lastname\": \"JUnit\",\n" +
+                "    \"address\": {\n" +
+                "      \"street\": \"Highway to Hell\",\n" +
+                "      \"streetNr\": \"66\",\n" +
+                "      \"zip\": 666,\n" +
+                "      \"city\": \"Hell\"\n" +
+                "    },\n" +
+                "    \"email\": \"JUnit.JUnit@hell.com\",\n" +
+                "    \"telephone\": \"66666666666\",\n" +
+                "    \"password\": \"evil is not good\",\n" +
+                "    \"admin\": false\n" +
+                "  }";
+
+        JsonNode jsonNode = Json.parse(body);
+
+        Http.RequestBuilder request = new Http.RequestBuilder().method("PUT")
+                .bodyJson(jsonNode)
+                .uri("/api/accounts");
+        Result result = route(request);
+
+        assertEquals(OK,result.status());
+    }
+
+    @Test
+    public void TestG_DeleteAccountTest(){
+
+        Http.RequestBuilder request = new Http.RequestBuilder().method("DELETE")
+                .uri("/api/accounts/"+ ACCOUNTID.toString());
+        Result result = route(request);
+
+        assertEquals(OK,result.status());
+    }
+
 }
