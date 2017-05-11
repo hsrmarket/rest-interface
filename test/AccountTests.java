@@ -19,6 +19,8 @@ public class AccountTests extends WithApplication {
 
     public static Integer ACCOUNTID;
     public static Integer ADDRESSID;
+    public static String EMAIL;
+    public static String PASSWORD;
 
     @Test
     public void TestA_PostAccountTest(){
@@ -50,12 +52,14 @@ public class AccountTests extends WithApplication {
         JsonNode answerJson = Json.parse(answerString);
         ACCOUNTID = answerJson.findPath("id").intValue();
         ADDRESSID = answerJson.get("address").findPath("id").intValue();
+        EMAIL = answerJson.findPath("email").textValue();
+        PASSWORD = answerJson.findPath("password").textValue();
 
         System.out.println(ACCOUNTID.toString());
 
         assertEquals(OK,result.status());
     }
-    
+
     @Test
     public void TestB_GetAllAccountsTest(){
         Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
@@ -84,7 +88,35 @@ public class AccountTests extends WithApplication {
     }
 
     @Test
-    public void TestE_GetOneAccountTest(){
+    public void TestE_GetAllArticlesFromAccountTest(){
+        Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
+                .uri("/api/user/" + ACCOUNTID.toString() + "/articles");
+        Result result = route(request);
+
+        assertEquals(OK,result.status());
+    }
+
+    @Test
+    public void TestF_GetAllBoughtArticlesFromAccountTest(){
+        Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
+                .uri("/api/user/" + ACCOUNTID.toString() + "/purchases");
+        Result result = route(request);
+
+        assertEquals(OK,result.status());
+    }
+
+    @Test
+    public void TestG_GetAllSoldArticlesFromAccountTest(){
+        Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
+                .uri("/api/user/" + ACCOUNTID.toString() + "/sales");
+        Result result = route(request);
+
+        assertEquals(OK,result.status());
+    }
+
+    @Ignore
+    @Test
+    public void TestH_GetOneAccountTest(){
         Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
                 .uri("/api/accounts/2");
         Result result = route(request);
@@ -93,7 +125,25 @@ public class AccountTests extends WithApplication {
     }
 
     @Test
-    public void TestF_UpdateAccountTest(){
+    public void TestI_LoginTest(){
+        String body = "{\n" +
+                "    \"email\": \"" + EMAIL + "\",\n" +
+                "    \"password\": \"" + PASSWORD + "\"\n" +
+                "}";
+
+        JsonNode jsonNode = Json.parse(body);
+
+        Http.RequestBuilder request = new Http.RequestBuilder().method("POST")
+                .bodyJson(jsonNode)
+                .uri("/api/user/login");
+        Result result = route(request);
+
+
+        assertEquals(OK,result.status());
+    }
+
+    @Test
+    public void TestJ_UpdateAccountTest(){
         String body = "{\n" +
                 "    \"id\": " + ACCOUNTID.toString() + ",\n" +
                 "    \"studentId\": 9999,\n" +
@@ -123,7 +173,7 @@ public class AccountTests extends WithApplication {
     }
 
     @Test
-    public void TestG_DeleteAccountTest(){
+    public void TestK_DeleteAccountTest(){
 
         Http.RequestBuilder request = new Http.RequestBuilder().method("DELETE")
                 .uri("/api/accounts/"+ ACCOUNTID.toString());
