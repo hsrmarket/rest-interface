@@ -117,7 +117,7 @@ public class AccountTests extends WithApplication {
     @Test
     public void TestH_GetOneAccountTest(){
         Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
-                .uri("/api/accounts/2");
+                .uri("/api/accounts/"+ACCOUNTID.toString());
         Result result = route(request);
 
         assertEquals(OK,result.status());
