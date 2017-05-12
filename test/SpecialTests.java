@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static play.mvc.Http.Status.BAD_REQUEST;
 import static play.mvc.Http.Status.NOT_FOUND;
 import static play.mvc.Http.Status.OK;
+import static play.test.Helpers.contentAsString;
 import static play.test.Helpers.route;
 
 
@@ -155,5 +156,22 @@ public class SpecialTests extends WithApplication {
         Result result = route(request);
 
         assertEquals(NOT_FOUND,result.status());
+    }
+
+    @Test
+    public void findArticleBySearching(){
+
+        String body = "{\n" +
+                "    \"search\": \"test\"\n" +
+                "}";
+
+        JsonNode jsonNode = Json.parse(body);
+
+        Http.RequestBuilder request = new Http.RequestBuilder().method("POST")
+                .bodyJson(jsonNode)
+                .uri("/api/search");
+        Result result = route(request);
+
+        assertEquals(OK,result.status());
     }
 }
