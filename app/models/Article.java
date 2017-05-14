@@ -6,14 +6,14 @@ public class Article {
 
     private Integer id;
     private String name;
-    private Integer price;
+    private Double price;
     private Integer condition;
     private String description;
     private Date creationDate;
     private String image;
     private String type;
 
-    public Article(String name, Integer price, Integer condition, String description, Date creationDate, String image, String type) {
+    public Article(String name, Double price, Integer condition, String description, Date creationDate, String image, String type) {
         this.name = name;
         this.price = price;
         this.condition = condition;
@@ -39,11 +39,11 @@ public class Article {
         this.name = name;
     }
 
-    public Integer getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

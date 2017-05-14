@@ -29,7 +29,7 @@ public class ElectronicController extends Controller{
             return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
         }
 
-        Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"electronic",json.findPath("producer").textValue(),json.findPath("model").textValue());
+        Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").doubleValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"electronic",json.findPath("producer").textValue(),json.findPath("model").textValue());
         //Properties checker
         int account_id = json.findPath("createdby").intValue();
 
@@ -55,7 +55,7 @@ public class ElectronicController extends Controller{
         articleStatement.setString(1,electronic.getName());
         articleStatement.setString(2,electronic.getDescription());
         articleStatement.setInt(3,electronic.getCondition());
-        articleStatement.setInt(4,electronic.getPrice());
+        articleStatement.setDouble(4,electronic.getPrice());
         articleStatement.setDate(5,electronic.getCreationDate());
         articleStatement.setString(6,electronic.getImage());
 
@@ -101,7 +101,7 @@ public class ElectronicController extends Controller{
             return badRequest(Json.toJson(new DefaultErrorMessage(12,"Missing Parameter (ID)")));
         }
 
-        Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"electronic",json.findPath("producer").textValue(),json.findPath("model").textValue());
+        Electronic electronic = new Electronic(json.findPath("name").textValue(),json.findPath("price").doubleValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"electronic",json.findPath("producer").textValue(),json.findPath("model").textValue());
         //Properties checker
         electronic.setId(id);
         try {
@@ -126,7 +126,7 @@ public class ElectronicController extends Controller{
         articleStatement.setString(1,electronic.getName());
         articleStatement.setString(2,electronic.getDescription());
         articleStatement.setInt(3,electronic.getCondition());
-        articleStatement.setInt(4,electronic.getPrice());
+        articleStatement.setDouble(4,electronic.getPrice());
         articleStatement.setDate(5,electronic.getCreationDate());
         articleStatement.setString(6,electronic.getImage());
         articleStatement.setInt(7,electronic.getId());
@@ -166,7 +166,7 @@ public class ElectronicController extends Controller{
             ArrayList<Electronic> list = new ArrayList<>();
 
             while(resultSet.next()){
-                Electronic electronic = new Electronic(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"electronic",resultSet.getString("manufacturer"),resultSet.getString("modell"));
+                Electronic electronic = new Electronic(resultSet.getString("name"),resultSet.getDouble("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"electronic",resultSet.getString("manufacturer"),resultSet.getString("modell"));
                 electronic.setId(resultSet.getInt("article_id"));
                 list.add(electronic);
             }
@@ -208,7 +208,7 @@ public class ElectronicController extends Controller{
         ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN electronics on articles.article_id = electronics.electronic_id WHERE article_id ="+id+"").executeQuery();
 
         if(resultSet.next()){
-            Electronic electronic = new Electronic(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"electronic",resultSet.getString("manufacturer"),resultSet.getString("modell"));
+            Electronic electronic = new Electronic(resultSet.getString("name"),resultSet.getDouble("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"electronic",resultSet.getString("manufacturer"),resultSet.getString("modell"));
             electronic.setId(resultSet.getInt("article_id"));
 
             connection.close();
@@ -216,8 +216,7 @@ public class ElectronicController extends Controller{
         }
 
         connection.close();
-        throw new SQLException("No electronic with given ID found");
-
+        throw new SQLException("No electronic with given ID found");/**/
 
     }
 

@@ -9,7 +9,7 @@ public class Book extends Article {
     private String publisher;
 
 
-    public Book(String name, Integer price, Integer condition, String description, Date creationDate, String image, String type, String isbn, String author, String publisher) {
+    public Book(String name, Double price, Integer condition, String description, Date creationDate, String image, String type, String isbn, String author, String publisher) {
         super(name, price, condition, description, creationDate, image, type);
         this.isbn = isbn;
         this.author = author;

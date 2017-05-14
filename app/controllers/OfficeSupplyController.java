@@ -30,7 +30,7 @@ public class OfficeSupplyController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
         }
 
-        OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
+        OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").doubleValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
         //Properties checker
         int account_id = json.findPath("createdby").intValue();
 
@@ -56,7 +56,7 @@ public class OfficeSupplyController extends Controller {
         articleStatement.setString(1,officeSupply.getName());
         articleStatement.setString(2,officeSupply.getDescription());
         articleStatement.setInt(3,officeSupply.getCondition());
-        articleStatement.setInt(4,officeSupply.getPrice());
+        articleStatement.setDouble(4,officeSupply.getPrice());
         articleStatement.setDate(5,officeSupply.getCreationDate());
         articleStatement.setString(6,officeSupply.getImage());
 
@@ -99,9 +99,9 @@ public class OfficeSupplyController extends Controller {
             return badRequest(Json.toJson(new DefaultErrorMessage(12,"Missing Parameter (ID)")));
         }
 
-        OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").intValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
+        OfficeSupply officeSupply = new OfficeSupply(json.findPath("name").textValue(),json.findPath("price").doubleValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"office supply");
         //Properties checker
-        officeSupply.setId(json.findPath("id").intValue());
+        officeSupply.setId(id);
 
         try {
             return ok(Json.toJson(updateOneOfficeSupply(officeSupply)));
@@ -125,7 +125,7 @@ public class OfficeSupplyController extends Controller {
         articleStatement.setString(1,officeSupply.getName());
         articleStatement.setString(2,officeSupply.getDescription());
         articleStatement.setInt(3,officeSupply.getCondition());
-        articleStatement.setInt(4,officeSupply.getPrice());
+        articleStatement.setDouble(4,officeSupply.getPrice());
         articleStatement.setDate(5,officeSupply.getCreationDate());
         articleStatement.setString(6,officeSupply.getImage());
         articleStatement.setInt(7,officeSupply.getId());
@@ -151,7 +151,7 @@ public class OfficeSupplyController extends Controller {
             ArrayList<OfficeSupply> list = new ArrayList<>();
 
             while(resultSet.next()){
-                OfficeSupply officeSupply = new OfficeSupply(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"office supply");
+                OfficeSupply officeSupply = new OfficeSupply(resultSet.getString("name"),resultSet.getDouble("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"office supply");
                 officeSupply.setId(resultSet.getInt("article_id"));
                 list.add(officeSupply);
             }
@@ -193,13 +193,12 @@ public class OfficeSupplyController extends Controller {
         ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN officesupplies on articles.article_id = officesupplies.officesupplie_id WHERE article_id ="+id+"").executeQuery();
 
         if(resultSet.next()){
-            OfficeSupply officeSupply = new OfficeSupply(resultSet.getString("name"),resultSet.getInt("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"office supply");
+            OfficeSupply officeSupply = new OfficeSupply(resultSet.getString("name"),resultSet.getDouble("price"),resultSet.getInt("condition"),resultSet.getString("description"),resultSet.getDate("creationdate"),resultSet.getString("image"),"office supply");
             officeSupply.setId(resultSet.getInt("article_id"));
 
             connection.close();
             return officeSupply;
         }
-
         connection.close();
         throw new SQLException("No office supply with given ID found");
 

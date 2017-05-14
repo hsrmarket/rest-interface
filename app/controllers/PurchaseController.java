@@ -98,6 +98,43 @@ public class PurchaseController extends Controller {
     }
 
 
+    public Result updatePurchase(Integer id){
+
+        JsonNode json = request().body().asJson();
+
+        if(json == null) {
+            return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
+        }
+
+        Boolean isCompleted = json.findPath("completed").asBoolean();
+
+        try {
+            connection = db.getConnection();
+            PreparedStatement purchaseStatement = connection.prepareStatement("UPDATE purchase SET iscompleted = ? WHERE purchase_id = ?", Statement.RETURN_GENERATED_KEYS);
+
+            purchaseStatement.setBoolean(1, isCompleted);
+            purchaseStatement.setInt(2, id);
+
+            int affectedRows = purchaseStatement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Updating purchase failed, no rows affected.");
+            }
+
+            return ok(Json.toJson(new DefaultSuccessMessage(0,"purchase successfully updated")));
+
+        }catch (SQLException e){
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+        }finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
+            }
+        }
+    }
+
+
     public Result deletePurchase(Integer id){
         try {
             connection = db.getConnection();
@@ -127,7 +164,7 @@ public class PurchaseController extends Controller {
     public Result getAllPurchases(){
         try {
             connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase INNER JOIN articles on purchase.article_id = articles.article_id INNER JOIN accounts as buyer on purchase.buyer_id  = buyer.account_id INNER JOIN accounts as seller on purchase.seller_id = seller.account_id").executeQuery();
             ArrayList<Purchase> list = new ArrayList<>();
             AccountController accountController = new AccountController(db);
             ArticleController articleController = new ArticleController(db);

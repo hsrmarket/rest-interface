@@ -45,24 +45,16 @@
 
     GET     /api/articles/:id                   controllers.ArticleController.getOneArticle(id:Integer)
     PUT     /api/articles/:id                   controllers.ArticleController.updateOneArticle(id:Integer)
-
-    # All calls for accounts
-    GET     /api/accounts                       controllers.AccountController.getAllAccounts
-    POST    /api/accounts                       controllers.AccountController.insertAccount
-    GET     /api/accounts/admin                 controllers.AccountController.getAdminAccounts
-    GET     /api/accounts/normal                controllers.AccountController.getNormalAccounts
-
-    GET     /api/accounts/:id                   controllers.AccountController.getOneAccount(id:Integer)
-    DELETE  /api/accounts/:id                   controllers.AccountController.deleteAccount(id:Integer)
+    DELETE  /api/articles/:id                   controllers.ArticleController.deleteArticle(id:Integer)
 
     # All calls for purchases
     GET     /api/purchases                      controllers.PurchaseController.getAllPurchases
     POST    /api/purchases                      controllers.PurchaseController.insertPurchase
-
     GET     /api/purchases/:id                  controllers.PurchaseController.getOnePurchase(id:Integer)
     DELETE  /api/purchases/:id                  controllers.PurchaseController.deletePurchase(id:Integer)
+    PATCH   /api/purchases/:id                  controllers.PurchaseController.updatePurchase(id:Integer)
 
-    #All calls for user
+    #All calls for user/account
     GET     /api/user/:id/articles              controllers.AccountController.getAllArticlesFromAccount(id:Integer)
     GET     /api/user/:id/purchases             controllers.AccountController.getAllBoughtArticlesFromAccount(id:Integer)
     GET     /api/user/:id/sales                 controllers.AccountController.getAllSoldArticlesFromAccount(id:Integer)
@@ -73,7 +65,6 @@
     POST    /api/accounts                       controllers.AccountController.insertAccount
     GET     /api/accounts/admin                 controllers.AccountController.getAdminAccounts
     GET     /api/accounts/normal                controllers.AccountController.getNormalAccounts
-
     GET     /api/accounts/:id                   controllers.AccountController.getOneAccount(id:Integer)
     DELETE  /api/accounts/:id                   controllers.AccountController.deleteAccount(id:Integer)
 
