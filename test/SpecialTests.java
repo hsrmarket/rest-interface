@@ -87,23 +87,6 @@ public class SpecialTests extends WithApplication {
         assertEquals(NOT_FOUND,result.status());
     }
 
-    // produces empty electronc table
-    // if before insert
-    @Ignore
-    @Test
-    public void postElectronicWithWrongTypeTest(){
-        String body = "{\"name\":\"JUnitElectronic\", \"price\":15, \"condition\":5, \"description\":\"This electronic was created with the JUnit Test\",\"creationDate\":\"2017-04-21\",\"image\":\"test.png\",\"producer\":\"JUnit\",\"model\":\"JUnit\", \"type\":\"book\", \"createdby\":12}";
-
-        JsonNode jsonNode = Json.parse(body);
-
-        Http.RequestBuilder request = new Http.RequestBuilder().method("POST")
-                .bodyJson(jsonNode)
-                .uri(routes.ArticleController.insertArticle().url());
-        Result result = route(request);
-
-        assertEquals(BAD_REQUEST,result.status());
-    }
-
     @Test
     public void getAllBooksTestWithWrongURI(){
         Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
