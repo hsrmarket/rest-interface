@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import models.*;
 import play.db.Database;
 import play.libs.Json;
+import play.libs.mailer.Email;
+import play.libs.mailer.MailerClient;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -16,6 +18,7 @@ public class PurchaseController extends Controller {
 
     private Database db;
     private Connection connection;
+    @Inject MailerClient mailerClient;
 
     @Inject
     public PurchaseController(Database db) {
@@ -42,22 +45,25 @@ public class PurchaseController extends Controller {
         ResultSet resultSet = null;
 
         int accountIDQuery = 0;
+        String accountEmailQuery = null;
 
         try {
-            resultSet = connection.prepareStatement("SELECT account_id FROM articleaccountallocation WHERE article_id = '" + article.getId() + "'").executeQuery();
+            resultSet = connection.prepareStatement("SELECT accounts.account_id, email FROM articleaccountallocation INNER JOIN accounts ON articleaccountallocation.account_id = accounts.account_id WHERE article_id = '" + article.getId() + "'").executeQuery();
             boolean isEmpty = resultSet.next();
             accountIDQuery = resultSet.getInt("account_id");
+            accountEmailQuery = resultSet.getString("email");
             resultSet.close();
             connection.close();
         } catch (SQLException e) {
 
         }
         seller.setId(accountIDQuery);
-
+        seller.setEmail(accountEmailQuery);
         Purchase purchase = new Purchase(article,account,json.findPath("completed").asBoolean(),Date.valueOf(json.findPath("purchaseDate").asText()),seller);
         //Properties checker
 
         try {
+            sendEmail(purchase);
             return ok(Json.toJson(insertPurchase(purchase)));
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
@@ -216,5 +222,17 @@ public class PurchaseController extends Controller {
             }
         }
     }
+
+
+    public void sendEmail(Purchase purchase) {
+        Email email = new Email()
+                .setSubject("New purchase on HSRmarket")
+                .setFrom("info@hsrmarket.ch")
+                .addTo(purchase.getSeller().getEmail())
+                .setBodyText("Dear customer, You have sold one of your articles on HSRmarket. Best wishes your HSRmarket-Team");
+
+            mailerClient.send(email);
+    }
+
 
 }

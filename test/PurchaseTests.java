@@ -22,17 +22,17 @@ public class PurchaseTests extends WithApplication{
     public void TestA_PostPurchaseTest(){
         String body = "{\n" +
                 "  \"article\": {\n" +
-                "       \"id\": 24,\n" +
-                "       \"name\": \"JUnitBook\",\n" +
-                "       \"price\": 12,\n" +
-                "       \"condition\": 8,\n" +
-                "       \"description\": \"This book was created with the JUnit Test\",\n" +
-                "       \"creationDate\": \"2017-04-21\",\n" +
-                "       \"image\": \"test.png\",\n" +
-                "       \"type\": \"book\",\n" +
-                "       \"isbn\": \"123-456-789\",\n" +
-                "       \"author\": \"JUnit\",\n" +
-                "       \"publisher\": \"JUnit\"\n" +
+                "    \"id\": 25,\n" +
+                "    \"name\": \"JUnit\",\n" +
+                "    \"price\": 15,\n" +
+                "    \"condition\": 5,\n" +
+                "    \"description\": \"This book was created with the JUnit Test\",\n" +
+                "    \"creationDate\": \"2017-04-21\",\n" +
+                "    \"image\": \"\",\n" +
+                "    \"type\": \"book\",\n" +
+                "    \"isbn\": \"5558-34834-3453-34534\",\n" +
+                "    \"author\": \"JUnit\",\n" +
+                "    \"publisher\": \"HSR\"\n" +
                 "},\n" +
                 "  \"buyer\": {\n" +
                 "    \"id\": 5,\n" +

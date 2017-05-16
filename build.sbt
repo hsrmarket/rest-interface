@@ -11,3 +11,4 @@ libraryDependencies += javaJdbc
 libraryDependencies += cache
 libraryDependencies += javaWs
 libraryDependencies += "org.postgresql" % "postgresql" % "9.4.1212"
+libraryDependencies += "com.typesafe.play" %% "play-mailer" % "5.0.0"
