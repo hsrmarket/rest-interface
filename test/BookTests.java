@@ -27,7 +27,7 @@ public class BookTests extends WithApplication {
 
         Http.RequestBuilder request = new Http.RequestBuilder().method("POST")
                 .bodyJson(jsonNode)
-                .uri(routes.ArticleController.insertArticle().url());
+                .uri("/api/articles");
         Result result = route(request);
 
         //get inserted ID for further processing

@@ -23,50 +23,9 @@ public class BookController extends Controller {
     }
 
 
-    public Result insertBook(){
-        JsonNode json = request().body().asJson();
-
-        if(json == null) {
-            return badRequest(Json.toJson(new DefaultErrorMessage(11,"Expecting Json data")));
-        }
-
-        Book book = new Book(json.findPath("name").textValue(),json.findPath("price").doubleValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
-        //Properties checker
-        int account_id = json.findPath("createdby").intValue();
-
-        try {
-            return ok(Json.toJson(insertBook(book, account_id)));
-        } catch (SQLException e) {
-            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-        } finally {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
-            }
-        }
-    }
-
-
-    private Book insertBook(Book book, int account_id) throws SQLException{
+    public Book insertBook(Book book, int account_id, ResultSet articleGeneratedKeys) throws SQLException{
 
         connection = db.getConnection();
-        PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-
-        articleStatement.setString(1,book.getName());
-        articleStatement.setString(2,book.getDescription());
-        articleStatement.setInt(3,book.getCondition());
-        articleStatement.setDouble(4,book.getPrice());
-        articleStatement.setDate(5,book.getCreationDate());
-        articleStatement.setString(6,book.getImage());
-
-        int affectedRows = articleStatement.executeUpdate();
-
-        if (affectedRows == 0) {
-            throw new SQLException("Creating book failed, no rows affected.");
-        }
-
-        ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
 
         PreparedStatement bookStatement = connection.prepareStatement("INSERT INTO books (book_id, author, publisher, isbn) VALUES (?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
@@ -85,9 +44,11 @@ public class BookController extends Controller {
             book.setId(articleGeneratedKeys.getInt(1));
 
         } else {
+            connection = db.getConnection();
             throw new SQLException("Creating book failed, no ID obtained.");
         }
 
+        connection = db.getConnection();
         return book;
     }
 

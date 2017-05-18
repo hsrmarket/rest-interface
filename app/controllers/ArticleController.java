@@ -36,10 +36,20 @@ public class ArticleController extends Controller {
             }
 
             switch (type) {
-
                 case "book":
-                    BookController bc = new BookController(db);
-                    return bc.insertBook();
+                    Book book = new Book(json.findPath("name").textValue(),json.findPath("price").doubleValue(),json.findPath("condition").intValue(),json.findPath("description").textValue(), Date.valueOf(json.findPath("creationDate").asText()),json.findPath("image").textValue(),"book",json.findPath("isbn").textValue(),json.findPath("author").textValue(),json.findPath("publisher").textValue());
+                    //Properties checker
+                    int account_id = json.findPath("createdby").intValue();
+                    Book insertedBook = null;
+                        try{
+                            ResultSet articleGeneratedKeys = insertArticle(book);
+
+                            BookController bc = new BookController(db);
+                            insertedBook = bc.insertBook(book, account_id, articleGeneratedKeys);
+                        } catch (SQLException e){
+                            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(), e.getMessage())));
+                        }
+                    return ok(Json.toJson(insertedBook));
 
                 case "electronic":
                     ElectronicController ec = new ElectronicController(db);
@@ -258,6 +268,31 @@ public class ArticleController extends Controller {
                 return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
             }
         }
+    }
+
+
+    private ResultSet insertArticle(Article article) throws SQLException{
+        connection = db.getConnection();
+        PreparedStatement articleStatement = connection.prepareStatement("INSERT INTO articles (name, description, condition, price, creationdate, image) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+
+        articleStatement.setString(1,article.getName());
+        articleStatement.setString(2,article.getDescription());
+        articleStatement.setInt(3,article.getCondition());
+        articleStatement.setDouble(4,article.getPrice());
+        articleStatement.setDate(5,article.getCreationDate());
+        articleStatement.setString(6,article.getImage());
+
+        int affectedRows = articleStatement.executeUpdate();
+
+        if (affectedRows == 0) {
+            connection.close();
+            throw new SQLException("Creating book failed, no rows affected.");
+        }
+
+        ResultSet articleGeneratedKeys = articleStatement.getGeneratedKeys();
+        connection.close();
+        return articleGeneratedKeys;
+
     }
 
 
