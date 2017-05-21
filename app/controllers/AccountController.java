@@ -405,13 +405,15 @@ public class AccountController extends Controller {
     public Result getAllBoughtArticlesFromAccount(Integer id){
         try {
             connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase WHERE buyer_id='"+id+"'").executeQuery();
-            ArrayList<Article> list = new ArrayList<>();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase INNER JOIN articles on purchase.article_id = articles.article_id INNER JOIN accounts as buyer on purchase.buyer_id  = buyer.account_id INNER JOIN accounts as seller on purchase.seller_id = seller.account_id WHERE purchase.buyer_id='"+id+"'").executeQuery();
+            ArrayList<Purchase> list = new ArrayList<>();
             ArticleController articleController = new ArticleController(db);
+            AccountController accountController = new AccountController(db);
 
             while(resultSet.next()){
-                Article article = articleController.getOneRawArticle(resultSet.getInt("article_id"));
-                list.add(article);
+                Purchase purchase = new Purchase(articleController.getOneRawArticle(resultSet.getInt("article_id")),accountController.getOneRawAccount(resultSet.getInt("buyer_id")),resultSet.getBoolean("iscompleted"),resultSet.getDate("purchasedate"),accountController.getOneRawAccount(resultSet.getInt("seller_id")));
+                purchase.setId(resultSet.getInt("purchase_id"));
+                list.add(purchase);
             }
 
             return ok(Json.toJson(list));
@@ -432,16 +434,19 @@ public class AccountController extends Controller {
     public Result getAllSoldArticlesFromAccount(Integer id){
         try {
             connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase WHERE seller_id='"+id+"'").executeQuery();
-            ArrayList<Article> salesList = new ArrayList<>();
+
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase INNER JOIN articles on purchase.article_id = articles.article_id INNER JOIN accounts as buyer on purchase.buyer_id  = buyer.account_id INNER JOIN accounts as seller on purchase.seller_id = seller.account_id WHERE purchase.seller_id='"+id+"'").executeQuery();
+            ArrayList<Purchase> list = new ArrayList<>();
             ArticleController articleController = new ArticleController(db);
+            AccountController accountController = new AccountController(db);
 
             while(resultSet.next()){
-                Article article = articleController.getOneRawArticle(resultSet.getInt("article_id"));
-                salesList.add(article);
+                Purchase purchase = new Purchase(articleController.getOneRawArticle(resultSet.getInt("article_id")),accountController.getOneRawAccount(resultSet.getInt("buyer_id")),resultSet.getBoolean("iscompleted"),resultSet.getDate("purchasedate"),accountController.getOneRawAccount(resultSet.getInt("seller_id")));
+                purchase.setId(resultSet.getInt("purchase_id"));
+                list.add(purchase);
             }
 
-            return ok(Json.toJson(salesList));
+            return ok(Json.toJson(list));
 
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
