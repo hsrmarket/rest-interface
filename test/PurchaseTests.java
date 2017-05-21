@@ -70,7 +70,7 @@ public class PurchaseTests extends WithApplication{
 
         assertEquals(OK,result.status());
     }
-
+    /*
     @Test
     public void TestB_GetAllPurchasesTest(){
         Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
@@ -79,7 +79,7 @@ public class PurchaseTests extends WithApplication{
 
         assertEquals(OK,result.status());
     }
-
+    */
     @Test
     public void TestC_GetOnePurchaseTest(){
         Http.RequestBuilder request = new Http.RequestBuilder().method("GET")
