@@ -199,7 +199,7 @@ public class AccountController extends Controller {
 
         try {
             connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM accounts INNER JOIN address ON accounts.address_id = address.address_id").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM accounts INNER JOIN address ON accounts.address_id = address.address_id ORDER BY account_id").executeQuery();
             ArrayList<Account> list = new ArrayList<>();
 
             while(resultSet.next()){
@@ -271,7 +271,7 @@ public class AccountController extends Controller {
 
         try {
             connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM accounts INNER JOIN address ON accounts.address_id = address.address_id WHERE isadmin='true'").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM accounts INNER JOIN address ON accounts.address_id = address.address_id WHERE isadmin='true' ORDER BY account_id").executeQuery();
             ArrayList<Account> list = new ArrayList<>();
 
             while(resultSet.next()){
@@ -302,7 +302,7 @@ public class AccountController extends Controller {
 
         try {
             connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM accounts INNER JOIN address ON accounts.address_id = address.address_id WHERE isadmin='false'").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM accounts INNER JOIN address ON accounts.address_id = address.address_id WHERE isadmin='false' ORDER BY account_id").executeQuery();
             ArrayList<Account> list = new ArrayList<>();
 
             while(resultSet.next()){
@@ -378,7 +378,7 @@ public class AccountController extends Controller {
 
         try {
             connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articleaccountallocation WHERE account_id='"+id+"'").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articleaccountallocation WHERE account_id='"+id+"' ORDER BY article_id").executeQuery();
             ArrayList<Article> list = new ArrayList<>();
             ArticleController articleController = new ArticleController(db);
 
@@ -405,7 +405,7 @@ public class AccountController extends Controller {
     public Result getAllBoughtArticlesFromAccount(Integer id){
         try {
             connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase INNER JOIN articles on purchase.article_id = articles.article_id INNER JOIN accounts as buyer on purchase.buyer_id  = buyer.account_id INNER JOIN accounts as seller on purchase.seller_id = seller.account_id WHERE purchase.buyer_id='"+id+"'").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase INNER JOIN articles on purchase.article_id = articles.article_id INNER JOIN accounts as buyer on purchase.buyer_id  = buyer.account_id INNER JOIN accounts as seller on purchase.seller_id = seller.account_id WHERE purchase.buyer_id='"+id+"' ORDER BY purchase.purchase_id").executeQuery();
             ArrayList<Purchase> list = new ArrayList<>();
             ArticleController articleController = new ArticleController(db);
             AccountController accountController = new AccountController(db);
@@ -435,7 +435,7 @@ public class AccountController extends Controller {
         try {
             connection = db.getConnection();
 
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase INNER JOIN articles on purchase.article_id = articles.article_id INNER JOIN accounts as buyer on purchase.buyer_id  = buyer.account_id INNER JOIN accounts as seller on purchase.seller_id = seller.account_id WHERE purchase.seller_id='"+id+"'").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase INNER JOIN articles on purchase.article_id = articles.article_id INNER JOIN accounts as buyer on purchase.buyer_id  = buyer.account_id INNER JOIN accounts as seller on purchase.seller_id = seller.account_id WHERE purchase.seller_id='"+id+"' ORDER BY purchase.purchase_id").executeQuery();
             ArrayList<Purchase> list = new ArrayList<>();
             ArticleController articleController = new ArticleController(db);
             AccountController accountController = new AccountController(db);

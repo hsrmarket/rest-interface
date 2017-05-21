@@ -147,7 +147,7 @@ public class OfficeSupplyController extends Controller {
 
 
 
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN officesupplies on articles.article_id = officesupplies.officesupplie_id LEFT JOIN purchase on articles.article_id  = purchase.article_id WHERE purchase.purchase_id IS NULL;").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM articles INNER JOIN officesupplies on articles.article_id = officesupplies.officesupplie_id LEFT JOIN purchase on articles.article_id  = purchase.article_id WHERE purchase.purchase_id IS NULL ORDER BY articles.article_id;").executeQuery();
             ArrayList<OfficeSupply> list = new ArrayList<>();
 
             while(resultSet.next()){
