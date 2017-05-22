@@ -196,7 +196,7 @@ public class OtherArticleController extends Controller {
             return otherArticle;
         }
 
-        connection.close();/**/
+        connection.close();
         throw new SQLException("No other article with given ID found");
 
     }

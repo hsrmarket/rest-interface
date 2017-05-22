@@ -42,10 +42,10 @@ public class PurchaseController extends Controller {
         Account seller = new Account(null,null,null,null,null,null,null,false);
 
         connection = db.getConnection();
-        ResultSet resultSet = null;
+        ResultSet resultSet;
 
-        int accountIDQuery = 0;
-        String accountEmailQuery = null;
+        int accountIDQuery;
+        String accountEmailQuery;
 
         try {
             resultSet = connection.prepareStatement("SELECT accounts.account_id, email FROM articleaccountallocation INNER JOIN accounts ON articleaccountallocation.account_id = accounts.account_id WHERE article_id = '" + article.getId() + "'").executeQuery();
@@ -55,7 +55,7 @@ public class PurchaseController extends Controller {
             resultSet.close();
             connection.close();
         } catch (SQLException e) {
-
+            return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
         }
         seller.setId(accountIDQuery);
         seller.setEmail(accountEmailQuery);
