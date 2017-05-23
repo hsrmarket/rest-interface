@@ -349,7 +349,7 @@ public class AccountController extends Controller {
             // Aus Zeitgründen wurde auf eine weitere Ausarbeitung verzichtet.
             // Normalerweise würde mit finally die connection geschlossen, doch dies funktioniert hier aus
             // unerklärlichen Gründen nicht
-            if (isEmpty == false) {
+            if (!isEmpty) {
                 resultSet.close();
                 connection.close();
                 return badRequest(Json.toJson(new DefaultErrorMessage(14, "Email or password is incorrect")));

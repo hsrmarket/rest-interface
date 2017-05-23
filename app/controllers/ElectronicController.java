@@ -216,7 +216,7 @@ public class ElectronicController extends Controller{
         }
 
         connection.close();
-        throw new SQLException("No electronic with given ID found");/**/
+        throw new SQLException("No electronic with given ID found");
 
     }
 
