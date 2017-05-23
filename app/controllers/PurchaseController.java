@@ -170,7 +170,7 @@ public class PurchaseController extends Controller {
     public Result getAllPurchases(){
         try {
             connection = db.getConnection();
-            ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase INNER JOIN articles on purchase.article_id = articles.article_id INNER JOIN accounts as buyer on purchase.buyer_id  = buyer.account_id INNER JOIN accounts as seller on purchase.seller_id = seller.account_id").executeQuery();
+            ResultSet resultSet = connection.prepareStatement("SELECT * FROM purchase INNER JOIN articles on purchase.article_id = articles.article_id INNER JOIN accounts as buyer on purchase.buyer_id  = buyer.account_id INNER JOIN accounts as seller on purchase.seller_id = seller.account_id ORDER BY purchase.purchase_id").executeQuery();
             ArrayList<Purchase> list = new ArrayList<>();
             AccountController accountController = new AccountController(db);
             ArticleController articleController = new ArticleController(db);
