@@ -63,7 +63,7 @@ public class PurchaseController extends Controller {
         //Properties checker
 
         try {
-            sendEmail(purchase);
+            //sendEmail(purchase);
             return ok(Json.toJson(insertPurchase(purchase)));
         } catch (SQLException e) {
             return badRequest(Json.toJson(new DefaultErrorMessage(e.getErrorCode(),e.getMessage())));
